@@ -175,14 +175,17 @@ class Application():
     def set_locale_en(self):
         global translate_matrix, translate
         translate = translate_matrix['en']
-        self.frame_welcome()
-        self.start_top_bar()
+        self.re_load()
 
     def set_locale_pt_br(self):
         global translate_matrix, translate
         translate = translate_matrix['pt_br']
+        self.re_load()
+        
+    def re_load(self):
         self.frame_welcome()
         self.start_top_bar()
+        self.window.title(translate['window_title'])
 
     def clear_frame(self) -> None:
         if self.active_frame == None: return
