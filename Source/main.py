@@ -1,3 +1,15 @@
+import json
+
+def write_json(file:str, json_dict:dict) -> None:
+    with open(file, 'w') as f:
+        f.write(json.dumps(json_dict, indent=4, sort_keys=True))
+
+def read_json(file:str) -> dict:
+    with open(file, 'r') as f:
+        return json.load(f)
+
+
+
 
 # Import Tkinter
 import tkinter as tk
@@ -164,11 +176,13 @@ class Application():
         global translate_matrix, translate
         translate = translate_matrix['en']
         self.frame_welcome()
+        self.start_top_bar()
 
     def set_locale_pt_br(self):
         global translate_matrix, translate
         translate = translate_matrix['pt_br']
         self.frame_welcome()
+        self.start_top_bar()
 
     def clear_frame(self) -> None:
         if self.active_frame == None: return
