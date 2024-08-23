@@ -3,3 +3,6 @@ __pycache__/
 
 # Banco de dados
 *.db
+
+# Inserção no banco de dados
+insert_db.py
