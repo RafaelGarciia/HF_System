@@ -1,16 +1,3 @@
-import json
-
-def write_json(file:str, json_dict:dict) -> None:
-    with open(file, 'w') as f:
-        f.write(json.dumps(json_dict, indent=4, sort_keys=True))
-
-def read_json(file:str) -> dict:
-    with open(file, 'r') as f:
-        return json.load(f)
-
-
-
-
 # Import Tkinter
 import tkinter as tk
 from tkinter import ttk
@@ -18,14 +5,11 @@ from tkinter import ttk
 # Import SQLite
 import sqlite3 as sql
 
+import funcs as fnc
 
-from datetime import date
 
 
-def rgb(r,g, b):
 
-    rgb=(r, g, b)
-    return '#%02x%02x%02x' % rgb
 
 translate = {
     "window_title"                  : '' ,
@@ -218,27 +202,28 @@ class Application():
         self.clear_frame()
         self.active_frame = self.new_frame()
 
-        pad_x = 5
-        input_frame = tk.Frame(self.active_frame, width=self.win_width-(pad_x*2), height=30, relief='groove', bg=rgb(112,128,144))
-        input_frame.place(x=pad_x, y=pad_x)
 
-        tk.Label(input_frame,
+        pad_x = 5
+        top_frame = tk.Frame(self.active_frame,
+            width  = self.win_width-(pad_x*2),
+            height = 30,
+            relief = 'groove',
+            bg     = fnc.rgb_to_hex(112,128,144)
+        )
+        top_frame.place(x=pad_x, y=pad_x)
+
+        #-# Date label
+        tk.Label(top_frame,
             text   = translate['frame_sicknote_new.date_label'],
             font   = ("Tahoma", 10),
             relief = 'flat',
-            bg=rgb(112,128,144)
+            bg=fnc.rgb_to_hex(112,128,144)
         ).place(x=5, y=5)
 
-        entry_date = tk.Entry(input_frame, width=11, justify='center')
+        #-# Date entry
+        entry_date = tk.Entry(top_frame, width=11, justify='center')
         entry_date.place(x=45, y=5)
-
-        if date.today().day < 10: day = f"0{date.today().day}"
-        else: day = date.today().day
-
-        if date.today().month < 10: month = f"0{date.today().month}"
-        else: month = date.today().month
-
-        entry_date.insert(0, f"{day}/{month}/{date.today().year}")
+        entry_date.insert(0, fnc.get_today())
 
 
 
