@@ -8,15 +8,7 @@ import funcs as fnc
 # Importing the sqlite module.
 import sqlite3 as sql
 
-
-# Exception class.
-# Used when you hear an error when loading the Json configuration file.
-class LoadConfigError(Exception):
-    def __init__(self, message, errors):            
-        # Call the base class constructor with the parameters it needs.
-        super().__init__(message)
-            
-        self.errors = errors
+from exception_module import LoadConfigError
 
 
 translation_matrix = {
@@ -40,6 +32,10 @@ translation_matrix = {
 
         "frame_welcome.msg"             : 'Bem vindo'   ,
 
+        "frame_companies_alreadyregistered.error" : 'Empresa já cadastrada',
+        "frame_companies_succeusregistered.report": 'Empresa cadastrado com sucesso',
+        "frame_companies_name-empty.error"        : 'O nome não pode ficar vazio',
+
         "frame_employees_alreadyregistered.error" : 'Funcionário já cadastrado',
         "frame_employees_succeusregistered.report": 'Funcionário cadastrado com sucesso',
         "frame_employees_companieempty.error"     : 'A empresa não pode ficar vazia',
@@ -49,16 +45,18 @@ translation_matrix = {
     },
 
     "en":{
-        "window_title"                  : 'System HF'   ,
+        "window.title"                       : 'System HF'   ,
 
-        "generic_companie"              : 'Companie'    ,
-        "generic_employees"             : 'Employees'   ,
-        "generic_date"                  : 'Date'        ,
-        "generic_sicknotes"             : 'Sick Notes'  ,
-        "generic_new"                   : 'New'         ,
-        "generic_list"                  : 'List'        ,
-        "generic_save"                  : 'Save'        ,
-        "generic_name"                  : 'Name'        ,
+        "generic_word_companie"              : 'Companie'    ,
+        "generic_word_employees"             : 'Employees'   ,
+        "generic_word_date"                  : 'Date'        ,
+        "generic_word_sicknotes"             : 'Sick Notes'  ,
+        "generic_word_new"                   : 'New'         ,
+        "generic_word_list"                  : 'List'        ,
+        "generic_word_save"                  : 'Save'        ,
+        "generic_word_name"                  : 'Name'        ,
+
+        "generic_error.name-empty"      : 'The name cannot be empty',
 
         "topbar_sys.topmenu"            : 'System'      ,
         "topbar_sys_home.button"        : 'Home'        ,
@@ -67,18 +65,16 @@ translation_matrix = {
 
         "frame_welcome.msg"             : 'Welcome'     ,
 
+        "frame_companies_alreadyregistered.error" : 'Companie already registered',
+        "frame_companies_succeusregistered.report": 'Companie successfully registered',
+
         "frame_employees_alreadyregistered.error" : 'Employee already registered',
         "frame_employees_succeusregistered.report": 'Employee successfully registered',
         "frame_employees_companieempty.error"     : 'The companie cannot be empty',
-        "frame_employees_nameempty.error"         : 'The name cannot be empty',
 
         "frame_employees_Employeename.label"      : 'Employee Name',
     }
 }
-
-
-
-
 
 
 # V Main Code V
@@ -99,7 +95,7 @@ def update_window():
 def top_bar():
     global window, active_translation
     global set_locale_en, set_locale_pt_br
-    global frame_welcome, frame_sicknote_new, frame_employee_new_view
+    global frame_welcome, frame_sicknote_new, frame_employee_new_view, frame_companie
 
     def cascademenu_sys(root:tk.Menu) -> tk.Menu:
         # Creating a cascade menu with system options
@@ -168,7 +164,7 @@ def top_bar():
     )
     top_bar.add_command(    #-# employee Frame
         label   = active_translation['generic_employees'],
-        command = frame_employee_new_view
+        command = frame_companie
     )
 
     # Applying the menubar to the window
@@ -427,9 +423,73 @@ def frame_employee_new_view():
 
     active_frame.place(x=0, y=0)
 
+def frame_companie():
+    global active_frame, active_translation, window, win_width
+    global clear_frame, new_frame
 
+    def apply():
+        connection, cursor = connect()
+        companies = cursor.execute("SELECT * FROM companies").fetchall()
 
+        name = entry_name.get().upper()
+        cont_id = 1
+        for item in companies:
+            if item[0] == cont_id: cont_id += 1
+            if item[1] == name:
+                tk.Label(active_frame, text=active_translation["frame_companies_alreadyregistered.error"]).place(relx=0.55, rely=0.90)
+                return
+        
+        if name not in (None, '', " "):
+            cursor.execute(f"INSERT INTO companies VALUES ({cont_id}, '{name}')")
+            connection.commit()
+            tk.Label(active_frame, text=active_translation['frame_employees_succeusregistered.report']).place(relx=0.55, rely=0.90, relwidth=0.46)
+            entry_name.delete(0, 'end')
+        else:
+            tk.Label(active_frame, text=active_translation['generic_error.name-empty']).place(x=5, rely=0.90, relwidth=0.46)
 
+        connection.close()
+        load_list_box()
+
+    def load_list_box():
+        list_companie.delete(0, 'end')
+
+        connection, cursor = connect()
+        query = cursor.execute(
+            """SELECT name FROM companies ORDER BY name ASC;"""
+        ).fetchall()
+        connection.close()
+
+        # Config ListBox
+        for item in query:
+            list_companie.insert(tk.END, item[0])
+
+    clear_frame()
+    active_frame = new_frame()
+    active_frame.place(x=0, y=0)
+
+    # Name Label
+    tk.Label(active_frame, text=active_translation['generic_companie'], justify='center').place(relx = 0.5, y=0, relwidth=0.5)
+    
+    # Entry Name
+    entry_name = tk.Entry(active_frame, justify='left')
+    entry_name.place(relx = 0.505, y=20, relwidth=0.48)
+
+    # Instantiate object
+    list_companie   = tk.Listbox  (active_frame)
+    scrollbar       = tk.Scrollbar(active_frame, orient='vertical')
+
+    # Query companies to list
+    load_list_box()
+    list_companie.configure(yscrollcommand = scrollbar.set)
+    list_companie.place (relx=0, rely=0, relwidth=0.47, relheight=1)
+
+    # Config ScrollBar
+    scrollbar.configure(command = list_companie.yview)
+    scrollbar.place(relx=0.47, rely=0, relwidth=0.03, relheight=1)
+
+    # Save Button
+    button_save = tk.Button(active_frame, text=active_translation['generic_save'], command=apply, width=5)
+    button_save.place(relx=0.37, y=80)
 
 
 
