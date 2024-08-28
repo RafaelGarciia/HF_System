@@ -45,34 +45,32 @@ translation_matrix = {
     },
 
     "en":{
-        "window.title"                       : 'System HF'   ,
+        "window.title"              : 'System HF'   ,
 
-        "generic_word_companie"              : 'Companie'    ,
-        "generic_word_employees"             : 'Employees'   ,
-        "generic_word_date"                  : 'Date'        ,
-        "generic_word_sicknotes"             : 'Sick Notes'  ,
-        "generic_word_new"                   : 'New'         ,
-        "generic_word_list"                  : 'List'        ,
-        "generic_word_save"                  : 'Save'        ,
-        "generic_word_name"                  : 'Name'        ,
+        "word.companie"             : 'Companie'    ,
+        "word.employees"            : 'Employees'   ,
+        "word.date"                 : 'Date'        ,
+        "word.sicknotes"            : 'Sick Notes'  ,
+        "word.new"                  : 'New'         ,
+        "word.list"                 : 'List'        ,
+        "word.save"                 : 'Save'        ,
+        "word.name"                 : 'Name'        ,
+        "word.system"               : 'System'      ,
+        "word.home"                 : 'Home'        ,
+        "word.language"             : 'Language'    ,
+        "word.exit"                 : 'Exit'        ,
 
-        "generic_error.name-empty"      : 'The name cannot be empty',
+        "error.name-empty"                  : 'The name cannot be empty'    ,
+        "error.companie-empty"              : 'The companie cannot be empty',
+        "error.companie-already-registered" : 'Companie already registered',
+        "error.employee-already-registered" : 'Employee already registered',
+        
+        
+        "report.companie-success-registered"    : 'Companie successfully registered',
+        "report.employee-success-registered"    : 'Employee successfully registered',
 
-        "topbar_sys.topmenu"            : 'System'      ,
-        "topbar_sys_home.button"        : 'Home'        ,
-        "topbar_sys_lang.cascmenu"      : 'Language'    ,
-        "topbar_sys_exit.button"        : 'Exit'        ,
-
-        "frame_welcome.msg"             : 'Welcome'     ,
-
-        "frame_companies_alreadyregistered.error" : 'Companie already registered',
-        "frame_companies_succeusregistered.report": 'Companie successfully registered',
-
-        "frame_employees_alreadyregistered.error" : 'Employee already registered',
-        "frame_employees_succeusregistered.report": 'Employee successfully registered',
-        "frame_employees_companieempty.error"     : 'The companie cannot be empty',
-
-        "frame_employees_Employeename.label"      : 'Employee Name',
+        "label.employee-name"       : 'Employee Name',
+        "msg.welcome"               : 'Welcome',
     }
 }
 
