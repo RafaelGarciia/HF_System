@@ -3,6 +3,7 @@ __pycache__/
 
 # Banco de dados
 *.db
+*.json
 
 # Inserção no banco de dados
 insert_db.py
