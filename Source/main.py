@@ -103,22 +103,36 @@ def top_bar():
 
         return topbar_sys_cascade_menu
 
-    def menu_human_resources(root:tk.Menu) -> tk.Menu:
+    def menu_register(root:tk.Menu) -> tk.Menu:
         
+        # Creating a cascade menu with register options
         cascade_menu = tk.Menu(root, tearoff=False)
+        # | Companies | Go to Companie register
+        # | Employees | Go to Employee register
         
-        cascade_menu.add_command(
+        cascade_menu.add_command(   #-# Companie Button
+            label   = active_translation['word.companies'],
+            command = frame_companie
+        )
+        cascade_menu.add_command(   #-# Employee Button
             label   = active_translation['word.employees'],
             command = frame_employee
         )
-        cascade_menu.add_separator()
 
-        cascade_menu.add_command(   #-# Sick Note button
-            label   = active_translation['word.sicknotes'],
+
+        return cascade_menu
+
+    def menu_human_resources(root:tk.Menu) -> tk.Menu:
+
+        cascade_menu = tk.Menu(root, tearoff=False)
+
+        cascade_menu.add_command(   #-# Companie Button
+            label   = active_translation['word.sicknote'],
             command = frame_sicknote
         )
 
         return cascade_menu
+
 
 
     # Creating the top menubar
@@ -128,6 +142,10 @@ def top_bar():
     top_bar.add_cascade(    #-# System cascade menu
         label = active_translation['word.system'],
         menu  = menu_system(top_bar)
+    )
+    top_bar.add_cascade(    #-# Register menu
+        label = active_translation['word.register'],
+        menu  = menu_register(top_bar)
     )
     top_bar.add_cascade(    #-# Human Resources menu
         label = active_translation['acronym.RH'],
@@ -406,7 +424,7 @@ def frame_companie():
     active_frame.place(x=0, y=0)
 
     # Name Label
-    tk.Label(active_frame, text=active_translation['generic_companie'], justify='center').place(relx = 0.5, y=0, relwidth=0.5)
+    tk.Label(active_frame, text=active_translation['word.companie'], justify='center').place(relx = 0.5, y=0, relwidth=0.5)
     
     # Entry Name
     entry_name = tk.Entry(active_frame, justify='left')
@@ -426,7 +444,7 @@ def frame_companie():
     scrollbar.place(relx=0.47, rely=0, relwidth=0.03, relheight=1)
 
     # Save Button
-    button_save = tk.Button(active_frame, text=active_translation['generic_save'], command=apply, width=5)
+    button_save = tk.Button(active_frame, text=active_translation['word.save'], command=apply, width=5)
     button_save.place(relx=0.37, y=80)
 
 

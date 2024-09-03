@@ -19,6 +19,7 @@ ptbr_translation = {
     "word.home"                 : 'Home'        ,
     "word.language"             : 'Linguagem'   ,
     "word.exit"                 : 'Sair'        ,
+    "word.register"             : 'Cadastro'    ,
 
     "phrase.human-resources"    : 'Recursos humanos'    ,
     "phrase.employee-name"      : 'Nome do funcionario' ,
@@ -57,6 +58,7 @@ en_translation = {
     "word.home"                 : 'Home'        ,
     "word.language"             : 'Language'    ,
     "word.exit"                 : 'Exit'        ,
+    "word.register"             : 'Register'    ,
     
     "phrase.human-resources"    : 'Human resources'     ,
     "phrase.employee-name"      : 'Employee name' ,
