@@ -8,71 +8,38 @@ import funcs as fnc
 # Importing the sqlite module.
 import sqlite3 as sql
 
-from exception_module import LoadConfigError
+from modules.exception_module   import LoadConfigError
+from modules.translation_module import translation_matrix
 
 
-translation_matrix = {
-    "pt_br":{
-        "window_title"                  : 'Sistema HF'  ,
-    
-        "generic_companie"              : 'Empresa'     ,
-        "generic_employees"             : 'Funcionarios',
-        "generic_date"                  : 'Data'        ,
-        "generic_sicknotes"             : 'Atestados'   ,
-        "generic_new"                   : 'Novo'        ,
-        "generic_list"                  : 'Listar'      ,
-        "generic_save"                  : 'Salvar'      ,
-        "generic_name"                  : 'Nome'        ,
-    
+#-# Translation
+locale = 'en'
+active_translation = {}
 
-        "topbar_sys.topmenu"            : 'Sistema'     ,
-        "topbar_sys_home.button"        : 'Home'        ,
-        "topbar_sys_lang.cascmenu"      : 'Idioma'      ,
-        "topbar_sys_exit.button"        : 'Sair'        ,
+def set_locale_en():
+    global locale, update_translation
+    locale = 'en'
+    update_translation()
 
-        "frame_welcome.msg"             : 'Bem vindo'   ,
+def set_locale_pt_br():
+    global locale, update_translation
+    locale = 'pt_br'
+    update_translation()
 
-        "frame_companies_alreadyregistered.error" : 'Empresa já cadastrada',
-        "frame_companies_succeusregistered.report": 'Empresa cadastrado com sucesso',
-        "frame_companies_name-empty.error"        : 'O nome não pode ficar vazio',
+def update_translation():
+    global active_translation, translation_matrix, locale
+    global update_window, top_bar, clear_frame, frame_welcome
+    global save_config
 
-        "frame_employees_alreadyregistered.error" : 'Funcionário já cadastrado',
-        "frame_employees_succeusregistered.report": 'Funcionário cadastrado com sucesso',
-        "frame_employees_companieempty.error"     : 'A empresa não pode ficar vazia',
-        "frame_employees_nameempty.error"         : 'O nome não pode ficar vazio',
 
-        "frame_employees_Employeename.label"      : 'Nome do Funcionario',
-    },
+    active_translation = translation_matrix[locale]
+    update_window()
+    top_bar()
+    clear_frame()
+    frame_welcome()
 
-    "en":{
-        "window.title"              : 'System HF'   ,
+    save_config()
 
-        "word.companie"             : 'Companie'    ,
-        "word.employees"            : 'Employees'   ,
-        "word.date"                 : 'Date'        ,
-        "word.sicknotes"            : 'Sick Notes'  ,
-        "word.new"                  : 'New'         ,
-        "word.list"                 : 'List'        ,
-        "word.save"                 : 'Save'        ,
-        "word.name"                 : 'Name'        ,
-        "word.system"               : 'System'      ,
-        "word.home"                 : 'Home'        ,
-        "word.language"             : 'Language'    ,
-        "word.exit"                 : 'Exit'        ,
-
-        "error.name-empty"                  : 'The name cannot be empty'    ,
-        "error.companie-empty"              : 'The companie cannot be empty',
-        "error.companie-already-registered" : 'Companie already registered',
-        "error.employee-already-registered" : 'Employee already registered',
-        
-        
-        "report.companie-success-registered"    : 'Companie successfully registered',
-        "report.employee-success-registered"    : 'Employee successfully registered',
-
-        "label.employee-name"       : 'Employee Name',
-        "msg.welcome"               : 'Welcome',
-    }
-}
 
 
 # V Main Code V
@@ -82,20 +49,37 @@ window      = tk.Tk()
 # Window sise
 win_width   = 500
 win_height  = 300
+window.resizable(False, False)
+window.geometry(f"{win_width}x{win_height}")
 
 def update_window():
-    global window, active_translation, win_width, win_height
+    global window, active_translation
 
-    window.title(active_translation['window_title'])
-    window.geometry(f"{win_width}x{win_height}")
-    window.resizable(False, False)
+    window.title(active_translation['window.title'])
 
 def top_bar():
     global window, active_translation
     global set_locale_en, set_locale_pt_br
-    global frame_welcome, frame_sicknote_new, frame_employee_new_view, frame_companie
+    global frame_welcome, frame_sicknote, frame_employee, frame_companie
 
-    def cascademenu_sys(root:tk.Menu) -> tk.Menu:
+    def menu_system(root:tk.Menu) -> tk.Menu:
+        def lang_submenu(root:tk.Menu) -> tk.Menu:
+            # Create a menu with locations
+            topbar_lang_menu = tk.Menu (root, tearoff=False)
+            # |  en   | Set the localization in English
+            # | pt_br | Set the localization in Brazilian_Portuguese
+            
+            topbar_lang_menu.add_command ( #-# English locate button
+                label   = 'en',
+                command = set_locale_en
+            )
+            topbar_lang_menu.add_cascade ( #-# Brazilian_Portuguese button
+                label   = 'pt_br',
+                command = set_locale_pt_br
+            )
+        
+            return topbar_lang_menu
+        
         # Creating a cascade menu with system options
         topbar_sys_cascade_menu = tk.Menu (root, tearoff=False)
         # |   Home   | Go to home page
@@ -104,65 +88,50 @@ def top_bar():
         # |   Exit   | Exit button
 
         topbar_sys_cascade_menu.add_command   (   #-# Home button
-            label   = active_translation['topbar_sys_home.button'],
+            label   = active_translation['word.home'],
             command = frame_welcome
         )
         topbar_sys_cascade_menu.add_cascade   (   #-# Language cascade menu
-            label   = active_translation['topbar_sys_lang.cascmenu'],
+            label   = active_translation['word.language'],
             menu    = lang_submenu (root)
         )
         topbar_sys_cascade_menu.add_separator ()  #-# Separator
         topbar_sys_cascade_menu.add_command   (   #-# Exit button
-            label   = active_translation['topbar_sys_exit.button'],
+            label   = active_translation['word.exit'],
             command = window.quit
         )
 
         return topbar_sys_cascade_menu
 
-    def lang_submenu(root:tk.Menu) -> tk.Menu:
-        # Create a menu with locations
-        topbar_lang_menu = tk.Menu (root, tearoff=False)
-        # |  en   | Set the localization in English
-        # | pt_br | Set the localization in Brazilian_Portuguese
+    def menu_human_resources(root:tk.Menu) -> tk.Menu:
         
-        topbar_lang_menu.add_command ( #-# English locate button
-            label   = 'en',
-            command = set_locale_en
+        cascade_menu = tk.Menu(root, tearoff=False)
+        
+        cascade_menu.add_command(
+            label   = active_translation['word.employees'],
+            command = frame_employee
         )
-        topbar_lang_menu.add_cascade ( #-# Brazilian_Portuguese button
-            label   = 'pt_br',
-            command = set_locale_pt_br
-        )
-    
-        return topbar_lang_menu
+        cascade_menu.add_separator()
 
-    def menu_sicknote(root:tk.Menu) -> tk.Menu:
-        # Creating a cascade menu with release of sick notes
-        topbar_sick_notes_menu = tk.Menu(root, tearoff=False)
-        # | New |
-        
-        topbar_sick_notes_menu.add_command(     #-# New sick note button
-            label   = active_translation['generic_new'],
-            command = frame_sicknote_new
+        cascade_menu.add_command(   #-# Sick Note button
+            label   = active_translation['word.sicknotes'],
+            command = frame_sicknote
         )
 
-        return topbar_sick_notes_menu
+        return cascade_menu
+
 
     # Creating the top menubar
     top_bar = tk.Menu(window)
 
     # Applying all cascade menus to the top menubar
     top_bar.add_cascade(    #-# System cascade menu
-        label = active_translation['topbar_sys.topmenu'],
-        menu  = cascademenu_sys(top_bar)
+        label = active_translation['word.system'],
+        menu  = menu_system(top_bar)
     )
-    top_bar.add_cascade(    #-# Sick notes cascade menu
-        label = active_translation['generic_sicknotes'],
-        menu  = menu_sicknote(top_bar)
-    )
-    top_bar.add_command(    #-# employee Frame
-        label   = active_translation['generic_employees'],
-        command = frame_companie
+    top_bar.add_cascade(    #-# Human Resources menu
+        label = active_translation['acronym.RH'],
+        menu  = menu_human_resources(top_bar)
     )
 
     # Applying the menubar to the window
@@ -218,35 +187,6 @@ def connect():
     return connection, cursor
 
 
-#-# Translation
-locale = 'en'
-active_translation = {}
-
-def set_locale_en():
-    global locale, update_translation
-    locale = 'en'
-    update_translation()
-
-def set_locale_pt_br():
-    global locale, update_translation
-    locale = 'pt_br'
-    update_translation()
-
-def update_translation():
-    global active_translation, translation_matrix, locale
-    global update_window, top_bar, clear_frame, frame_welcome
-    global save_config
-
-
-    active_translation = translation_matrix[locale]
-    update_window()
-    top_bar()
-    clear_frame()
-    frame_welcome()
-
-    save_config()
-
-
 #--# Frames
 active_frame:tk.Frame = None
 
@@ -270,7 +210,7 @@ def frame_welcome():
     clear_frame()
     active_frame = new_frame()
 
-    text_label = active_translation['frame_welcome.msg']
+    text_label = active_translation['msg.welcome']
     label_center_x = (win_width/2 )-(len(text_label)*10)
     label_center_y = (win_height/2) - 25
 
@@ -280,7 +220,7 @@ def frame_welcome():
 
     active_frame.place(x=0, y=0)
 
-def frame_sicknote_new():
+def frame_sicknote():
     global active_frame, active_translation, window, win_width
     global clear_frame, new_frame
 
@@ -298,7 +238,7 @@ def frame_sicknote_new():
 
     #-# Date label
     tk.Label(top_frame,
-        text    = active_translation['generic_date'],
+        text    = active_translation['word.date'],
         font    = ("Tahoma", 10),
         relief  = 'flat',
         bg      = fnc.rgb_to_hex(112, 128, 144)
@@ -319,14 +259,14 @@ def frame_sicknote_new():
     for item in query:
         employees.append(f"{item[0]}")
 
-    cb_employee = ttk.Combobox(active_frame, width=50)
+    cb_employee = ttk.Combobox(active_frame, width=50, height=5)
     cb_employee['values'] = employees
     cb_employee.place(x=5, y=50)
 
 
     active_frame.place(x=0, y=0)
 
-def frame_employee_new_view():
+def frame_employee():
     global active_frame, active_translation, window, win_width
     global clear_frame, new_frame
 
@@ -340,20 +280,20 @@ def frame_employee_new_view():
         for item in employees:
             if item[0] == cont_id: cont_id += 1
             if item[1] == name:
-                tk.Label(active_frame, text=active_translation["frame_employees_alreadyregistered.error"]).place(relx=0.05, rely=0.90)
+                tk.Label(active_frame, text=active_translation["error.employee-already-registered"]).place(relx=0.05, rely=0.90)
                 return
 
         if name not in (None, '', " "):
             if companie not in (None, '', " "):
                 cursor.execute(f"INSERT INTO employees VALUES ({cont_id}, '{name}', '{companie}')")
                 connection.commit()
-                tk.Label(active_frame, text=active_translation['frame_employees_succeusregistered.report']).place(x=5, rely=0.90, relwidth=0.46)
+                tk.Label(active_frame, text=active_translation['report.employee-success-registered']).place(x=5, rely=0.90, relwidth=0.46)
                 entry_name.delete(0, 'end')
                 cb_companie.delete(0, 'end')
             else:
-                tk.Label(active_frame, text=active_translation['frame_employees_companieempty.error']).place(x=5, rely=0.90, relwidth=0.46)
+                tk.Label(active_frame, text=active_translation['error.companie-empty']).place(x=5, rely=0.90, relwidth=0.46)
         else:
-            tk.Label(active_frame, text=active_translation['frame_employees_nameempty.error']).place(x=5, rely=0.90, relwidth=0.46)
+            tk.Label(active_frame, text=active_translation['error.name-empty']).place(x=5, rely=0.90, relwidth=0.46)
 
         connection.close()
         load_tree_view()
@@ -374,7 +314,7 @@ def frame_employee_new_view():
     clear_frame()
     active_frame = new_frame()
 
-    tk.Label(active_frame, text=active_translation['frame_employees_Employeename.label']).place(relx=0.125, y=0)
+    tk.Label(active_frame, text=active_translation['phrase.employee-name']).place(relx=0.125, y=0)
 
     entry_name = tk.Entry(active_frame, width=37, justify='left')
     entry_name.place(x=5, y=20)
@@ -391,20 +331,20 @@ def frame_employee_new_view():
         companies.append(item[0])
 
 
-    tk.Label(active_frame, text=active_translation['generic_companie']).place(x=5, y=50)
+    tk.Label(active_frame, text=active_translation['word.companie']).place(x=5, y=50)
 
     cb_companie = ttk.Combobox(active_frame, width=23)
     cb_companie['values'] = companies
     cb_companie.place(relx=0.14, y=50)
 
-    button_save = tk.Button(active_frame, text=active_translation['generic_save'], command=apply, width=5)
+    button_save = tk.Button(active_frame, text=active_translation['word.save'], command=apply, width=5)
     button_save.place(relx=0.37, y=80)
 
     scrollbar = tk.Scrollbar(active_frame, orient='vertical')
 
     tw_employees = ttk.Treeview(active_frame, height=18, yscrollcommand=scrollbar.set, columns=("name", 'companie'), show='headings')
-    tw_employees.heading("name"    , text = active_translation['generic_name'    ])
-    tw_employees.heading("companie", text = active_translation['generic_companie'])
+    tw_employees.heading("name"    , text = active_translation['word.name'    ])
+    tw_employees.heading("companie", text = active_translation['word.companie'])
 
     tw_employees.column("name"   , width = 100)
     tw_employees.column("companie", width = 1)

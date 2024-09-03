@@ -5,9 +5,12 @@ ptbr_translation = {
     "window.title"              : 'Sistema HF'   ,
 
     "word.companie"             : 'Empresa'     ,
-    "word.employees"            : 'Funcionario' ,
+    "word.companies"            : 'Empresas'    ,
+    "word.employee"             : 'Funcionario' ,
+    "word.employees"            : 'Funcionarios',
     "word.date"                 : 'Data'        ,
-    "word.sicknotes"            : 'Atestado'    ,
+    "word.sicknote"             : 'Atestado'    ,
+    "word.sicknotes"            : 'Atestados'   ,
     "word.new"                  : 'Novo'        ,
     "word.list"                 : 'Lista'       ,
     "word.save"                 : 'Salvar'      ,
@@ -16,6 +19,11 @@ ptbr_translation = {
     "word.home"                 : 'Home'        ,
     "word.language"             : 'Linguagem'   ,
     "word.exit"                 : 'Sair'        ,
+
+    "phrase.human-resources"    : 'Recursos humanos'    ,
+    "phrase.employee-name"      : 'Nome do funcionario' ,
+    
+    "acronym.RH"                : 'RH'  ,
 
     "error.name-empty"                  : 'O nome não pode ser vazio'   ,
     "error.companie-empty"              : 'A empresa não pode ser vazia',
@@ -26,7 +34,7 @@ ptbr_translation = {
     "report.companie-success-registered"    : 'Empresa registrada com sucesso'    ,
     "report.employee-success-registered"    : 'Funcionario registrado com sucesso',
 
-    "label.employee-name"       : 'Nome do funcionario',
+    
     
     "msg.welcome"               : 'Bem vindo',
 }
@@ -35,9 +43,12 @@ en_translation = {
     "window.title"              : 'System HF'   ,
 
     "word.companie"             : 'Companie'    ,
+    "word.companies"            : 'Companies'   ,
     "word.employee"             : 'Employee'    ,
+    "word.employees"            : 'Employees'   ,
     "word.date"                 : 'Date'        ,
     "word.sicknote"             : 'Sick Note'   ,
+    "word.sicknotes"            : 'Sick Notes'  ,
     "word.new"                  : 'New'         ,
     "word.list"                 : 'List'        ,
     "word.save"                 : 'Save'        ,
@@ -46,6 +57,11 @@ en_translation = {
     "word.home"                 : 'Home'        ,
     "word.language"             : 'Language'    ,
     "word.exit"                 : 'Exit'        ,
+    
+    "phrase.human-resources"    : 'Human resources'     ,
+    "phrase.employee-name"      : 'Employee name' ,
+    
+    "acronym.RH"                : 'HR'  ,
 
     "error.name-empty"                  : 'The name cannot be empty'    ,
     "error.companie-empty"              : 'The companie cannot be empty',
@@ -56,7 +72,6 @@ en_translation = {
     "report.companie-success-registered"    : 'Companie successfully registered',
     "report.employee-success-registered"    : 'Employee successfully registered',
 
-    "label.employee-name"       : 'Employee Name',
     
     "msg.welcome"               : 'Welcome',
 }
