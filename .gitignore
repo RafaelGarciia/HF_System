@@ -7,3 +7,6 @@ __pycache__/
 
 # Inserção no banco de dados
 insert_db.py
+
+# Build de testes
+*.exe
