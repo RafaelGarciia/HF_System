@@ -1,21 +1,45 @@
 from curses import window
 import tkinter as tk
+from tkinter import Scrollbar, ttk
 from window import Window
 
+class Main_frame():
+    def __init__(self) -> None:
+        ...
 
-
-
-class Frame_Companie():
-    def __init__(self, window:Window) -> None:
+    def __call__(self, window:Window) -> None:
         self.window = window
         self.root = window.root
-
         self.translate = window.translate
 
         # Frame Config
-        window.clear_frame()
+        self.main_frame = tk.Frame(self.root)
+        self.main_frame.bind('<Button>', lambda event: self.report_label.place_forget())
+
+        self.window.clear_frame()
+        self.window.active_frame = self.main_frame
+        self.window.active_frame.place(x=0, y=0)
+
+
+        self.report_label = tk.Label(self.main_frame, text="", justify='center')
+
+class Frame_Companie():
+    def __init__(self) -> None:
+        ...
+
+    def __call__(self, window:Window) -> None:
+        self.window = window
+        self.root = window.root
+        self.translate = window.translate
+
+        # Frame Config
         main_frame = tk.Frame(self.root)
         main_frame.bind('<Button>', lambda event: self.report_label.place_forget())
+
+        self.window.clear_frame()
+        self.window.active_frame = main_frame
+        self.window.active_frame.place(x=0, y=0)
+
 
         # Name Label
         tk.Label(main_frame,
@@ -168,3 +192,53 @@ class Frame_Companie():
         self.report_label.place(relx=0.5, rely=0.90, relwidth=0.45)
 
 
+class Frame_employee(Main_frame):
+    def __call__(self, window:Window) -> None:
+        super.__call__(window)
+
+        tk.Label(self.main_frame,
+            text = self.translate.get_translate(['word.companie'])
+        ).place(x=5, y=50)
+
+        self.cb_companie = ttk.Combobox(self.main_frame, width=23)
+        self.cb_companie.place(relx=0.14, y=50)
+
+        button_save = tk.Button(self.main_frame,
+            text=self.translate.get_translate(['word.save']),
+            command=apply,
+            width=5
+        )
+        button_save.place(relx=0.37, y=80)
+
+        scrollbar = tk.Scrollbar(self.main_frame, orient='vertical')
+        scrollbar.place(relx=0.97, rely=0.01, relwidth=0.03, relheight=0.97)
+
+
+        self.tw_employees = ttk.Treeview(self.main_frame,
+            height=18, columns=('name', 'companie'), show='headings'
+        )
+        self.tw_employees.heading(  'name'  , text=self.translate.get_translate([  'word.name'  ]))
+        self.tw_employees.heading('companie', text=self.translate.get_translate(['word.companie']))
+
+        self.tw_employees.column(  'name'  , width=100)
+        self.tw_employees.column('companie', width= 1 )
+
+        self.tw_employees.configure(yscrollcommand=scrollbar.set)
+        scrollbar.configure(command=self.tw_employees.yview)
+
+        scrollbar.place(relx=0.97, rely=0.01, relwidth=0.03, relheight=0.97)
+        self.tw_employees.place(relx=0.48, rely=0.01, relwidth=0.49, relheight=0.90)
+
+
+    def load_combobox_companie(self):
+        connection, cursor = self.window.connect_db()
+        query = cursor.execute(
+            """SELECT name FROM companies ORDER BY name ASC;"""
+        ).fetchall()
+        connection.close()
+
+        self.cb_companie['values'] = query
+
+    def load_tree_view(self):
+        
+        
