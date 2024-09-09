@@ -206,7 +206,7 @@ def connect():
 
 
 #--# Frames
-active_frame:tk.Frame = None
+active_frame:tk.Frame | None = None
 
 def clear_frame() -> None:
     global active_frame
@@ -367,7 +367,7 @@ def frame_employee():
     tw_employees.column("name"   , width = 100)
     tw_employees.column("companie", width = 1)
 
-    tw_employees.configure(yscroll=scrollbar.set)
+    tw_employees.configure(yscrollcommand=scrollbar.set)
 
     scrollbar.place     (relx=0.97, rely=0.01, relwidth=0.03, relheight=0.97)
     tw_employees.place  (relx=0.48, rely=0.01, relwidth=0.49, relheight=0.90)
@@ -383,7 +383,7 @@ def frame_companie():
     global active_frame, active_translation, window, win_width
     global clear_frame, new_frame
 
-    def apply():
+    def save():
         connection, cursor = connect()
         companies = cursor.execute("SELECT * FROM companies").fetchall()
 
@@ -392,19 +392,57 @@ def frame_companie():
         for item in companies:
             if item[0] == cont_id: cont_id += 1
             if item[1] == name:
-                tk.Label(active_frame, text=active_translation["frame_companies_alreadyregistered.error"]).place(relx=0.55, rely=0.90)
+                report_label.configure(text=active_translation["error.companie-already-registered"])
+                report_label.place(relx=0.5, rely=0.90, relwidth=0.45)
                 return
         
         if name not in (None, '', " "):
             cursor.execute(f"INSERT INTO companies VALUES ({cont_id}, '{name}')")
             connection.commit()
-            tk.Label(active_frame, text=active_translation['frame_employees_succeusregistered.report']).place(relx=0.55, rely=0.90, relwidth=0.46)
+            report_label.configure(text=active_translation['report.companie-success-registered'])
+            report_label.place(relx=0.5, rely=0.90, relwidth=0.45)
             entry_name.delete(0, 'end')
         else:
-            tk.Label(active_frame, text=active_translation['generic_error.name-empty']).place(x=5, rely=0.90, relwidth=0.46)
+            report_label.configure(text=active_translation['error.name-empty'])
+            report_label.place(relx=0.5, rely=0.90, relwidth=0.45)
 
         connection.close()
         load_list_box()
+
+    def delete():
+        connection, cursor = connect()
+        companies_db = cursor.execute("SELECT * FROM companies").fetchall()
+
+        companie_names = []
+        for item in companies_db:
+            companie_names.append(item[1])
+
+        name = entry_name.get().upper()
+        if name in (None, '', ' '):
+            try:
+                name = list_companie.selection_get()
+            except Exception as error:
+                report_label.configure(text=active_translation['warning.select-an-item'])
+                report_label.place(relx=0.5, rely=0.90, relwidth=0.45)
+        elif name not in companie_names:
+            report_label.configure(text=active_translation['error.Company-not-found'])
+            report_label.place(relx=0.5, rely=0.90, relwidth=0.45)
+        else:
+            try:
+                cursor.execute(f"DELETE FROM companies WHERE name = '{name}'")
+                connection.commit()
+                report_label.configure(text=active_translation["report.companie-success-deleted"])
+                report_label.place(relx=0.5, rely=0.90, relwidth=0.45)
+            except Exception as error:
+                print(error)
+
+        connection.close()
+        load_list_box()
+
+        
+        
+
+
 
     def load_list_box():
         list_companie.delete(0, 'end')
@@ -419,34 +457,49 @@ def frame_companie():
         for item in query:
             list_companie.insert(tk.END, item[0])
 
+    def select_companie(event):
+        selected = list_companie.selection_get()
+        entry_name.delete(0, 'end')
+        entry_name.insert(0, selected)
+
+
+
     clear_frame()
     active_frame = new_frame()
     active_frame.place(x=0, y=0)
+    active_frame.bind('<Button>', lambda event: report_label.place_forget())
 
     # Name Label
-    tk.Label(active_frame, text=active_translation['word.companie'], justify='center').place(relx = 0.5, y=0, relwidth=0.5)
-    
+    tk.Label(active_frame, text=active_translation['word.companie'], justify='center').place(relx=0, y=7, relwidth=0.12)
+
     # Entry Name
     entry_name = tk.Entry(active_frame, justify='left')
-    entry_name.place(relx = 0.505, y=20, relwidth=0.48)
+    entry_name.place(relx = 0.12, y=8, relwidth=0.6)
 
     # Instantiate object
     list_companie   = tk.Listbox  (active_frame)
+    list_companie.bind('<Double-Button>', select_companie)
     scrollbar       = tk.Scrollbar(active_frame, orient='vertical')
 
     # Query companies to list
     load_list_box()
     list_companie.configure(yscrollcommand = scrollbar.set)
-    list_companie.place (relx=0, rely=0, relwidth=0.47, relheight=1)
+    list_companie.place (relx=0, rely=0.5, relwidth=1, relheight=0.5)
 
     # Config ScrollBar
     scrollbar.configure(command = list_companie.yview)
-    scrollbar.place(relx=0.47, rely=0, relwidth=0.03, relheight=1)
+    scrollbar.place(relx=0.97, rely=0.5, relwidth=0.03, relheight=0.5)
+
+    # Report label
+    report_label = tk.Label(active_frame, text="", justify='center')
 
     # Save Button
-    button_save = tk.Button(active_frame, text=active_translation['word.save'], command=apply, width=5)
-    button_save.place(relx=0.37, y=80)
+    button_save = tk.Button(active_frame, text=active_translation['word.save'], command=save, width=5)
+    button_save.place(relx=0.73, y=5, width=60)
 
+    # Delete Button
+    button_delete = tk.Button(active_frame, text=active_translation['word.delete'], command=delete)
+    button_delete.place(relx=0.87, y=5, width=60)
 
 
 

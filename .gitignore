@@ -10,3 +10,9 @@ insert_db.py
 
 # Build de testes
 *.exe
+
+# Py Venv
+venv/
+
+# Vscode files
+.vscode/
