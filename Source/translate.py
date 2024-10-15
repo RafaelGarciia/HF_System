@@ -93,24 +93,9 @@ translation_matrix = {
     "pt_br" : ptbr_translation
 }
 
-class Translate():
-    def __init__(self) -> None:
-        self.locale = 'en'
-        self.tl_dict = translation_matrix[self.locale]
 
-    def set_locale_en(self, updates:list = []):
-        self.locale = 'en'
-        self.tl_dict = translation_matrix[self.locale]
-        
-        for item in updates:
-            item()
-        
-    def set_locale_ptbr(self, updates:list = []):
-        self.locale = 'pt_br'
-        self.tl_dict = translation_matrix[self.locale]
-        
-        for item in updates:
-            item()
-        
-    def get_translate(self, translate_key):
-        return self.tl_dict[translate_key]
+def get_translate(locale, key):
+    if locale in translation_matrix:
+        return translation_matrix[locale][key]
+    else:
+        raise print('error')
