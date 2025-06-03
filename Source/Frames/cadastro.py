@@ -95,3 +95,19 @@ class Material(Frame):
     def show_alert(self, texto: str, cor='red', duração=3000):
         self.msg_label.configure(text=texto, foreground=cor)
         self.after(duração, lambda: self.msg_label.configure(text=''))
+
+    def excluir_item(self):
+        selecionado = self.tree.selection()
+        if not selecionado:
+            self.show_alert('Selecione um item para excluir.')
+            return
+
+        item = self.tree.item(selecionado)
+        id_item = item['values'][0]  # id está na posição 0
+
+        try:
+            sql.delete('material', id_item)
+            self.show_alert('Item excluído com sucesso.', 'green')
+            self.load_tree()
+        except Exception as e:
+            self.show_alert(f'Erro ao excluir: {e}')
