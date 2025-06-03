@@ -1,9 +1,8 @@
 import tkinter as tk
 from tkinter import END, ttk
 from ttkbootstrap.widgets import Frame, Label, Entry, Button
-from ..sql import sql
+import sql
 
-DATA_PATH = 'data_base.db'
 
 class FrameCadastroMaterial(Frame):
     def __init__(self, parent):
