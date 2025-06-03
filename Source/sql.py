@@ -66,7 +66,7 @@ def insert(table: str, dados: list[tuple]):
 
 def get_all(table: str):
     conn, cursor = connect()
-    cursor.execute('SELECT * FROM material')
+    cursor.execute(f'SELECT * FROM {table}')
     results = cursor.fetchall()
     conn.close()
     return results
