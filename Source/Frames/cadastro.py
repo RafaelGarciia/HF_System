@@ -8,15 +8,21 @@ class Material(Frame):
     def __init__(self, parent):
         super().__init__(parent, padding=20)
 
-        Label(self, text="Matéria-Prima", font=("Arial", 18)).pack(pady=(0, 10))
+        Label(self, text='Matéria-Prima', font=('Arial', 18)).pack(
+            pady=(0, 10)
+        )
 
         # Campo de entrada
         self.nome_var = tk.StringVar()
         entry_frame = Frame(self)
-        entry_frame.pack(fill="x", pady=10)
+        entry_frame.pack(fill='x', pady=10)
 
-        Entry(entry_frame,textvariable=self.nome_var).pack(side="left", fill="x", expand=True, padx=(0, 10))
-        Button(entry_frame, text="Adicionar", command=self.adicionar_item).pack(side="left")
+        Entry(entry_frame, textvariable=self.nome_var).pack(
+            side='left', fill='x', expand=True, padx=(0, 10)
+        )
+        Button(
+            entry_frame, text='Adicionar', command=self.adicionar_item
+        ).pack(side='left')
 
         # Tabela
         self.tree = ttk.Treeview(self, columns=("nome",), show="headings", height=10)
