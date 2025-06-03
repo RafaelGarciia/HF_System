@@ -111,3 +111,54 @@ class Material(Frame):
             self.load_tree()
         except Exception as e:
             self.show_alert(f'Erro ao excluir: {e}')
+
+    def editar_item(self):
+        selecionado = self.tree.selection()
+        if not selecionado:
+            self.show_alert('Selecione um item para editar.')
+            return
+
+        item = self.tree.item(selecionado)
+        id_item = item['values'][0]
+        nome_atual = item['values'][1]
+
+        # Preenche o campo com o nome atual
+        self.nome_var.set(nome_atual)
+
+        # Altera o botão "Adicionar" para "Salvar"
+        def salvar_edicao():
+            novo_nome = self.nome_var.get().strip()
+            if not novo_nome:
+                self.show_alert('Digite um novo nome.')
+                return
+
+            try:
+                sql.update('material', id_item, novo_nome)
+                self.show_alert('Atualizado com sucesso!', 'green')
+                self.nome_var.set('')
+                self.load_tree()
+                btn_salvar.destroy()
+                btn_cancelar.destroy()
+                btn_adicionar.pack(side='left')  # volta o botão de adicionar
+            except Exception as e:
+                self.show_alert(f'Erro ao atualizar: {e}')
+
+        def cancelar_edicao():
+            self.nome_var.set('')
+            btn_salvar.destroy()
+            btn_cancelar.destroy()
+            btn_adicionar.pack(side='left')
+
+        # Esconde o botão "Adicionar"
+        btn_adicionar = self.children['!frame'].children['!button']
+        btn_adicionar.pack_forget()
+
+        # Adiciona botões "Salvar" e "Cancelar"
+        btn_salvar = Button(
+            self.children['!frame'], text='Salvar', command=salvar_edicao
+        )
+        btn_salvar.pack(side='left', padx=5)
+        btn_cancelar = Button(
+            self.children['!frame'], text='Cancelar', command=cancelar_edicao
+        )
+        btn_cancelar.pack(side='left')
