@@ -74,7 +74,24 @@ class Material(Frame):
             self.tree.delete(item)
 
     def adicionar_item(self):
-        nome = self.nome_var.get().strip()
-        if nome:
-            sql.insert('material', [nome])
-            self.nome_var.set("")
+        nome = self.nome_var.get().strip().capitalize()
+        if not nome:
+            self.show_alert('Digite um nome para a matéria-prima.')
+            return
+
+        material_existente = [item[1] for item in sql.get_all('material')]
+
+        if nome in material_existente:
+            self.show_alert('Já cadastrado')
+        else:
+            try:
+                sql.insert('material', [(nome,)])
+                self.show_alert(f'"{nome}" inserido com sucesso.', 'green')
+                self.nome_var.set('')  # Limpa campo
+            except Exception as e:
+                self.show_alert(f'Erro: {e}')
+        self.load_tree()
+
+    def show_alert(self, texto: str, cor='red', duração=3000):
+        self.msg_label.configure(text=texto, foreground=cor)
+        self.after(duração, lambda: self.msg_label.configure(text=''))
