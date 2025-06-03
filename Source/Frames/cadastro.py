@@ -4,7 +4,7 @@ from ttkbootstrap.widgets import Frame, Label, Entry, Button
 import sql
 
 
-class FrameCadastroMaterial(Frame):
+class Material(Frame):
     def __init__(self, parent):
         super().__init__(parent, padding=20)
 
