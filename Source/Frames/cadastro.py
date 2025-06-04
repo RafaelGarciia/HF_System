@@ -1,7 +1,8 @@
 import tkinter as tk
-from tkinter import END, ttk
+from tkinter import ttk
 from ttkbootstrap.widgets import Frame, Label, Entry, Button
 import sql
+from ttkbootstrap.constants import *
 
 
 class Material(Frame):
