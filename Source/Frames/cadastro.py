@@ -6,6 +6,110 @@ from ttkbootstrap.constants import *
 from ttkbootstrap.widgets import Button, Entry, Frame, Label
 
 
+class Base_Frame(Frame):
+
+    table: str
+    """  """
+
+    frame_title: Label
+    """ Frame Title\n\n  Titulo do frame"""
+
+    entry_frame: Frame
+    """Frame that groups all the Entries\n\n Frame que agrupa todas as Entradas"""
+
+    list_view_frame: Frame
+    """Frame containing the treeview\n\n Frame que contem a Treview"""
+
+    list_view_tree: ttk.Treeview
+    """  """
+
+    buttons_frame: Frame
+    """  """
+
+    button_1: Button
+    """  """
+
+    button_2: Button
+    """  """
+
+    button_3: Button
+    """  """
+
+    warning_label: Label
+    """  """
+
+
+    def __init__(self, parent, table):
+        super().__init__(parent)
+
+        self.table=table
+
+        # Titulo do frame
+        self.frame_title = Label(
+            self, text='Fornecedores', font=('Arial', 15), anchor='center', justify='center'
+        ).grid(row=0, column=0, columnspan=2)
+        
+        # Frame que agrupa todas as entradas
+        self.entry_frame = Frame(self)
+        self.entry_frame.grid(row=1, column=0)
+
+        # Frame da tabela
+        self.list_view_frame = ttk.Frame(self)
+        self.list_view_frame.grid(
+            row=1, column=1, rowspan=2
+        )
+
+        # Scroll bar vertical
+        scrollbar = ttk.Scrollbar(self.list_view_frame, orient='vertical')
+        scrollbar.pack(side='right', fill='y')
+
+        # Tabela para a visualização
+        self.list_view_tree = ttk.Treeview(
+            self.list_view_frame, columns=('id',), show='headings', height=15, yscrollcommand=scrollbar.set
+        )
+        self.list_view_tree.heading('id', text='ID')
+        self.list_view_tree.column('id', width=0, stretch=False)  # Oculta ID
+        self.list_view_tree.pack(side='left', fill='both', expand=True)
+        scrollbar.config(command=self.list_view_tree.yview)
+        self.list_view_tree.bind('<Double-1>', self.select_item)
+        
+        # Botões de ação
+        self.buttons_frame = Frame(self)
+        self.buttons_frame.grid(row=2, column=0)
+
+        self.button_1 = self.NewButton()
+        self.button_1.grid(row=0, column=0, padx=10)
+
+        self.button_2 = self.NewButton()
+        self.button_2.grid(row=0, column=1, padx=10)
+
+        self.button_3 = self.NewButton()
+        self.button_3.grid(row=0, column=2, padx=10)
+
+        # Label de mensagens temporárias
+        self.warning_label = ttk.Label(self, text='', foreground='red')
+        self.warning_label.grid(row=3, column=0, columnspan=2)
+
+    
+    def clear_list_view(self):
+        for item in self.list_view_tree.get_children():
+            self.list_view_tree.delete(item)
+
+    def load_list_view(self):
+        self.clear_list_view()
+        for _values in sql.get_all(self.table):
+                self.list_view_tree.insert('', 'end', values=_values)
+    
+    def select_item_in_list_view(self, event):
+        item_id = self.list_view_tree.focus()       # Pega o ID na tabela do item selecionado
+        item = self.list_view_tree.item(item_id)    # Pega os dados do item
+        values = item['values']                     # Lista com os valores da linha
+
+
+
+
+    def NewButton(self):
+        return Button(self.buttons_frame, text='', width=10, state='disable')
 
 class Fornecedor(Frame):
     def __init__(self, parent):
