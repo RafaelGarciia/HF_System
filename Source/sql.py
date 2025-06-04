@@ -61,7 +61,9 @@ def insert(table: str, dados: list[tuple]):
 
 def get_columns(table: str):
     conn, cursor = connect()
-    cursor.execute(f'PRAGMA table_info({table})') # Obtem as colunas da tabela
+    cursor.execute(
+        f'PRAGMA table_info({table})'
+    )   # Obtem as colunas da tabela
     columns_info = cursor.fetchall()
 
     # Mantém colunas que NÃO são AUTOINCREMENT e que exigem valor
@@ -69,6 +71,7 @@ def get_columns(table: str):
         col[1] for col in columns_info if not col[5] or col[4] is not None
     ]
     return columns
+
 
 def get_all(table: str):
     conn, cursor = connect()
@@ -88,11 +91,13 @@ def delete(table: str, id_: int):
 
 def update(table: str, id, new_values: list):
 
-    _columns = ", ".join([f"{col} = ?" for col in get_columns(table)])
+    _columns = ', '.join([f'{col} = ?' for col in get_columns(table)])
 
     try:
         conn, cursor = connect()
-        cursor.execute(f'UPDATE {table} SET {_columns} WHERE id = {id}', new_values)
+        cursor.execute(
+            f'UPDATE {table} SET {_columns} WHERE id = {id}', new_values
+        )
         conn.commit()
         conn.close()
     except Exception as e:
