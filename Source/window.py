@@ -63,7 +63,7 @@ class Window(tk.Tk):
         self.width = width
         self.height = height
 
-        self.title('Janela principal')
+        self.title(title)
         self.geometry(f'{width}x{height}')
         self.resizable(False, False)
         self.style = Style(style)
@@ -87,7 +87,7 @@ class Window(tk.Tk):
         self.container.pack_forget()
         self.container.pack(expand=True, fill='both')
         page: Frame = frame(self.container)
-        page.grid(row=0, column=0, sticky='nsew')
+        page.pack(expand=True, fill='both')
 
     def criar_menu(self, menu_dict: dict) -> tk.Menu:
         """

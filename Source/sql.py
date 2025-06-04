@@ -30,13 +30,7 @@ def insert(table: str, dados: list[tuple]):
     conn, cursor = connect()
 
     # Obtem as colunas da tabela
-    cursor.execute(f'PRAGMA table_info({table})')
-    colunas_info = cursor.fetchall()
-
-    # Mantém colunas que NÃO são AUTOINCREMENT e que exigem valor
-    colunas = [
-        col[1] for col in colunas_info if not col[5] or col[4] is not None
-    ]
+    colunas = get_columns(table)
 
     if not colunas:
         raise ValueError('Nenhuma coluna encontrada para inserção.')
@@ -49,6 +43,7 @@ def insert(table: str, dados: list[tuple]):
                 "Se está inserindo uma única string, use vírgula: ('valor',)"
             )
         if len(item) != len(colunas):
+            print(colunas)
             raise ValueError(
                 f'Dado na posição {i} tem {len(item)} valores, mas a tabela espera {len(colunas)}.'
             )
@@ -64,9 +59,24 @@ def insert(table: str, dados: list[tuple]):
     conn.close()
 
 
+def get_columns(table: str):
+    conn, cursor = connect()
+    cursor.execute(
+        f'PRAGMA table_info({table})'
+    )   # Obtem as colunas da tabela
+    columns_info = cursor.fetchall()
+
+    # Mantém colunas que NÃO são AUTOINCREMENT e que exigem valor
+    columns = [
+        col[1] for col in columns_info if not col[5] or col[4] is not None
+    ]
+    return columns
+
+
 def get_all(table: str):
     conn, cursor = connect()
-    cursor.execute(f'SELECT * FROM {table}')
+    columns = get_columns(table)
+    cursor.execute(f'SELECT * FROM {table} ORDER BY {columns[0]} ASC')
     results = cursor.fetchall()
     conn.close()
     return results
@@ -79,8 +89,16 @@ def delete(table: str, id_: int):
     conn.close()
 
 
-def update(table: str, id_: int, nome: str):
-    conn, cursor = connect()
-    cursor.execute(f'UPDATE {table} SET nome = ? WHERE id = ?', (nome, id_))
-    conn.commit()
-    conn.close()
+def update(table: str, id, new_values: list):
+
+    _columns = ', '.join([f'{col} = ?' for col in get_columns(table)])
+
+    try:
+        conn, cursor = connect()
+        cursor.execute(
+            f'UPDATE {table} SET {_columns} WHERE id = {id}', new_values
+        )
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        ...
