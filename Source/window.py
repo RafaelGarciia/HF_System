@@ -63,7 +63,7 @@ class Window(tk.Tk):
         self.width = width
         self.height = height
 
-        self.title('Janela principal')
+        self.title(title)
         self.geometry(f'{width}x{height}')
         self.resizable(False, False)
         self.style = Style(style)
