@@ -1,8 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
+from typing import Literal
+
 from ttkbootstrap import Style
 from ttkbootstrap.widgets import Frame
-from typing import Literal
 
 # Lista com os temas aceitos pelo ttkbootstrap.Style
 Theme = Literal[

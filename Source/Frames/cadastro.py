@@ -1,8 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
-from ttkbootstrap.widgets import Frame, Label, Entry, Button
+
 import sql
 from ttkbootstrap.constants import *
+from ttkbootstrap.widgets import Button, Entry, Frame, Label
+
 
 
 class Fornecedor(Frame):
