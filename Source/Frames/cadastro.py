@@ -5,6 +5,43 @@ import sql
 from ttkbootstrap.constants import *
 
 
+class Fornecedor(Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        # Título
+        Label(self, text='Fornecedores', font=('Arial', 15), anchor='center', justify="center").grid(row=0, column=0, columnspan=2)#pack(fill='x')
+
+
+        # Campos de entrada
+        form_frame = Frame(self)    # frame do formulário de cadastro
+        form_frame.grid(row=1, column=0) #pack(side='left', expand=True)
+
+        Label(form_frame, text='Nome:').grid(
+            row=0, column=0, padx=10, pady=5, sticky=E
+        )
+        self.var_name = tk.StringVar()
+        self.entry_name = Entry(form_frame, textvariable= self.var_name ,width=40)
+        self.entry_name.grid(row=0, column=1, padx=5, pady=5)
+
+        Label(form_frame, text='Endereço:').grid(
+            row=1, column=0, padx=10, pady=5, sticky=E
+        )
+        self.var_address = tk.StringVar()
+        self.entry_address = Entry(form_frame, textvariable= self.var_address ,width=40)
+        self.entry_address.grid(row=1, column=1, padx=5, pady=5)
+
+        Label(form_frame, text='NFE:').grid(
+            row=2, column=0, padx=10, pady=5, sticky=E
+        )
+        self.var_nfe = tk.StringVar()
+        self.entry_nfe = Entry(form_frame, textvariable=self.var_nfe, width=40)
+        self.entry_nfe.grid(row=2, column=1, padx=5, pady=5)
+
+        #
+
+        # Frame da tabela
+        self.tree_frame = ttk.Frame(self)
 class Material(Frame):
     def __init__(self, parent):
         super().__init__(parent, padding=20)
