@@ -180,3 +180,69 @@ class Base_Frame(Frame):
         for _index, _var in enumerate(self.stringvar_list):
             _var: tk.StringVar
             _var.set(item_values[_index+1])
+
+class Fornecedor(Base_Frame):
+    def __init__(self, parent):
+        super().__init__(parent, 'fornecedor')
+
+        self.frame_title.configure(text='Fornecedor')
+
+        Label(self.entry_frame, text='Nome:').grid(row=0, column=0, padx=10, pady=5, sticky=E)
+        var_name = tk.StringVar(self.entry_frame)
+        entry_name = Entry(self.entry_frame, name='nome', textvariable=var_name, width=40)
+        entry_name.grid(row=0, column=1, padx=5, pady=5)
+
+        Label(self.entry_frame, text='Endereço:').grid(row=1, column=0, padx=10, pady=5, sticky=E)
+        var_address = tk.StringVar(self.entry_frame)
+        entry_address = Entry(self.entry_frame, name='endereço',textvariable=var_address, width=40)
+        entry_address.grid(row=1, column=1, padx=5, pady=5)
+        
+        Label(self.entry_frame, text='NFE:').grid(row=2, column=0, padx=10, pady=5, sticky=E)
+        var_nfe = tk.StringVar(self.entry_frame)
+        entry_nfe = Entry(self.entry_frame, name='nfe',textvariable=var_nfe, width=40)
+        entry_nfe.grid(row=2, column=1, padx=5, pady=5)
+
+        self.stringvar_list = [var_name, var_address, var_nfe]
+
+        self.list_view_tree.configure(columns=('id', 'nome'))
+        self.list_view_tree.heading('id', text='ID')
+        self.list_view_tree.heading('nome', text='Nome')
+        self.list_view_tree.column('id', width=0, stretch=False)  # Oculta ID
+        self.list_view_tree.column('nome', width=135)
+
+
+        self.load_list_view()
+
+        self.button_mode(self.button_1, 'off')
+        self.button_mode(self.button_2, 'off')
+        self.button_mode(self.button_3, 'add')
+
+    def button_mode(self, button: Button, mode: Literal['edit', 'cancel', 'add', 'clear', 'save', 'off']='off'):
+        match mode:
+            case 'edit'     : button.config(text='Editar',bootstyle='primary',state='active',command=self.edit_item)
+            case 'cancel'   : button.config(text='Cancelar',bootstyle='danger',state='active',command=self.clear_entrys)
+            case 'add'      : button.config(text='Adicionar',bootstyle='success',state='active',command=self.add_item)
+            case 'clear'    : button.config(text='limpar',bootstyle='info',state='active',command=self.clear_entrys)
+            case 'save'     : button.config(text='Salvar',bootstyle='success',state='active',command=self.save_edit)
+            case 'off'      : button.config(text='', state='disable')
+
+    def select_item_in_list_view(self, event):
+        super().select_item_in_list_view(event)
+        
+        self.button_mode(self.button_1, 'off')
+        self.button_mode(self.button_2, 'edit')
+        self.button_mode(self.button_3, 'clear')
+
+    def clear_entrys(self):
+        super().clear_entrys()
+
+        self.button_mode(self.button_1, 'off')
+        self.button_mode(self.button_2, 'off')
+        self.button_mode(self.button_3, 'add')
+
+    def edit_item(self):
+        super().edit_item()
+
+        self.button_mode(self.button_1, 'cancel')
+        self.button_mode(self.button_2, 'off')
+        self.button_mode(self.button_3, 'save')
