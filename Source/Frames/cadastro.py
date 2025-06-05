@@ -149,6 +149,17 @@ class Base_Frame(Frame):
                 self.show_warning(f"Erro: {e}")
         self.load_list_view()
 
+    def dell_item(self):                            # Rotina para deletar um item do banco de dados
+        _id = self.get_selected_item()['values'][0]
+
+        try:
+            sql.delete(self.table, _id)
+            self.show_warning('Deletado com sucesso.', 'green')
+            self.clear_entrys()
+        except Exception as e:
+            self.show_warning(f'Erro ao deletar:\n{e}')
+        self.load_list_view()
+
     def edit_item(self):                            # Rotina para iniciar uma edição de item
         for entry in self.get_entrys():
             entry.config(state='normal')
@@ -164,7 +175,6 @@ class Base_Frame(Frame):
         try:
             sql.update(self.table, _id, value_list)
             self.show_warning('Atualizado com sucesso.', 'green')
-            input()
             self.clear_entrys()
         except Exception as e:
             self.show_warning(f'Erro ao atualizar:\n{e}')
