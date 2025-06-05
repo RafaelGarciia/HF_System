@@ -35,29 +35,14 @@ def insert(table: str, dados: list[tuple]):
     if not colunas:
         raise ValueError('Nenhuma coluna encontrada para inserção.')
 
-    # Verifica os dados
-    for i, item in enumerate(dados):
-        if not isinstance(item, tuple):
-            raise TypeError(
-                f'Dado na posição {i} não é uma tupla. '
-                "Se está inserindo uma única string, use vírgula: ('valor',)"
-            )
-        if len(item) != len(colunas):
-            print(colunas)
-            raise ValueError(
-                f'Dado na posição {i} tem {len(item)} valores, mas a tabela espera {len(colunas)}.'
-            )
-
     # Monta o SQL dinamicamente
     colunas_str = ', '.join(colunas)
     placeholders = ', '.join(['?'] * len(colunas))
     sql = f'INSERT INTO {table} ({colunas_str}) VALUES ({placeholders})'
 
-    cursor.executemany(sql, dados)
-
+    cursor.execute(sql, dados)
     conn.commit()
     conn.close()
-
 
 def get_columns(table: str):
     conn, cursor = connect()
@@ -72,7 +57,6 @@ def get_columns(table: str):
     ]
     return columns
 
-
 def get_all(table: str):
     conn, cursor = connect()
     columns = get_columns(table)
@@ -81,13 +65,11 @@ def get_all(table: str):
     conn.close()
     return results
 
-
 def delete(table: str, id_: int):
     conn, cursor = connect()
     cursor.execute(f'DELETE FROM {table} WHERE id = ?', (id_,))
     conn.commit()
     conn.close()
-
 
 def update(table: str, id, new_values: list):
 

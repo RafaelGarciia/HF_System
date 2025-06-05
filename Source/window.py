@@ -1,8 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
+from typing import Literal
+
 from ttkbootstrap import Style
 from ttkbootstrap.widgets import Frame
-from typing import Literal
 
 # Lista com os temas aceitos pelo ttkbootstrap.Style
 Theme = Literal[
@@ -85,9 +86,8 @@ class Window(tk.Tk):
         """
 
         self.container.pack_forget()
+        self.container:Frame = frame(self)
         self.container.pack(expand=True, fill='both')
-        page: Frame = frame(self.container)
-        page.pack(expand=True, fill='both')
 
     def criar_menu(self, menu_dict: dict) -> tk.Menu:
         """

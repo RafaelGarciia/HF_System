@@ -1,6 +1,6 @@
-from window import Window
-from Frames import cadastro
 import sql
+from Frames import cadastro
+from window import Window
 
 sql.execute_script('sql_queries\\mk_database.sql')
 
