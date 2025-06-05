@@ -69,7 +69,7 @@ class Base_Frame(Frame):
         scrollbar.pack(side='right', fill='y')
 
         # Tabela para a visualização
-        self.list_view_tree = ttk.Treeview(self.list_view_frame, columns=('id',), show='headings', height=15, yscrollcommand=scrollbar.set)
+        self.list_view_tree = ttk.Treeview(self.list_view_frame, columns=('id',), show='headings', height=22, yscrollcommand=scrollbar.set)
         self.list_view_tree.heading('id', text='ID')
         self.list_view_tree.column('id', width=0, stretch=False)  # Oculta ID
         self.list_view_tree.pack(side='left', fill='both', expand=True)
@@ -93,6 +93,10 @@ class Base_Frame(Frame):
         self.warning_label = ttk.Label(self, text='', foreground='red')
         self.warning_label.grid(row=3, column=0, columnspan=2)
 
+        self.button_mode(self.button_1, 'off')
+        self.button_mode(self.button_2, 'off')
+        self.button_mode(self.button_3, 'add')
+
     # Get Funcs:
     def get_entrys(self) -> list[Entry]:            # Retorna uma lista com todas as Entrys do self.entry_frame
         return [widget for widget in self.entry_frame.winfo_children() if isinstance(widget, tk.Entry)]
@@ -114,6 +118,10 @@ class Base_Frame(Frame):
         for widget in self.get_entrys(): widget.config(state='normal')
         # Seta as StringsVars como Vazias
         for var in self.stringvar_list: var.set('')
+
+        self.button_mode(self.button_1, 'off')
+        self.button_mode(self.button_2, 'off')
+        self.button_mode(self.button_3, 'add')
 
     # Utils:
     def load_list_view(self):                       # Recarrega a self.list_view_tree com as informações do banco de dados
@@ -163,6 +171,10 @@ class Base_Frame(Frame):
     def edit_item(self):                            # Rotina para iniciar uma edição de item
         for entry in self.get_entrys():
             entry.config(state='normal')
+        
+        self.button_mode(self.button_1, 'cancel')
+        self.button_mode(self.button_2, 'off')
+        self.button_mode(self.button_3, 'save')
 
     def save_edit(self):                            # Rotina para salvar e finalizar a edição do item
         _id = self.get_selected_item()['values'][0]
@@ -191,6 +203,23 @@ class Base_Frame(Frame):
             _var: tk.StringVar
             _var.set(item_values[_index+1])
 
+        self.button_mode(self.button_1, 'dell')
+        self.button_mode(self.button_2, 'edit')
+        self.button_mode(self.button_3, 'clear')
+
+    # Button Functions: 
+    def button_mode(self, button: Button, mode: Literal['dell', 'edit', 'cancel', 'add', 'clear', 'save', 'off']='off'):
+        match mode:
+            case 'dell'     : button.config(text='Deletar', bootstyle='danger', state='active', command=self.dell_item)
+            case 'edit'     : button.config(text='Editar',bootstyle='primary',state='active',command=self.edit_item)
+            case 'cancel'   : button.config(text='Cancelar',bootstyle='danger',state='active',command=self.clear_entrys)
+            case 'add'      : button.config(text='Adicionar',bootstyle='success',state='active',command=self.add_item)
+            case 'clear'    : button.config(text='limpar',bootstyle='info',state='active',command=self.clear_entrys)
+            case 'save'     : button.config(text='Salvar',bootstyle='success',state='active',command=self.save_edit)
+            case 'off'      : button.config(text='', state='disable')
+
+
+# Frame_pages: 
 class Fornecedor(Base_Frame):
     def __init__(self, parent):
         super().__init__(parent, 'fornecedor')
@@ -220,44 +249,7 @@ class Fornecedor(Base_Frame):
         self.list_view_tree.column('id', width=0, stretch=False)  # Oculta ID
         self.list_view_tree.column('nome', width=135)
 
-
         self.load_list_view()
-
-        self.button_mode(self.button_1, 'off')
-        self.button_mode(self.button_2, 'off')
-        self.button_mode(self.button_3, 'add')
-
-    # Altera a configuração do botão de acordo com o parametro passado:
-    def button_mode(self, button: Button, mode: Literal['edit', 'cancel', 'add', 'clear', 'save', 'off']='off'):
-        match mode:
-            case 'edit'     : button.config(text='Editar',bootstyle='primary',state='active',command=self.edit_item)
-            case 'cancel'   : button.config(text='Cancelar',bootstyle='danger',state='active',command=self.clear_entrys)
-            case 'add'      : button.config(text='Adicionar',bootstyle='success',state='active',command=self.add_item)
-            case 'clear'    : button.config(text='limpar',bootstyle='info',state='active',command=self.clear_entrys)
-            case 'save'     : button.config(text='Salvar',bootstyle='success',state='active',command=self.save_edit)
-            case 'off'      : button.config(text='', state='disable')
-
-    # Actions:
-    def select_item_in_list_view(self, event):              # Executa a função herdada e adiciona as modificações dos botões 
-        super().select_item_in_list_view(event)
-        
-        self.button_mode(self.button_1, 'off')
-        self.button_mode(self.button_2, 'edit')
-        self.button_mode(self.button_3, 'clear')
-
-    def clear_entrys(self):                                 # Executa a função herdada e adiciona as modificações dos botões 
-        super().clear_entrys()
-
-        self.button_mode(self.button_1, 'off')
-        self.button_mode(self.button_2, 'off')
-        self.button_mode(self.button_3, 'add')
-
-    def edit_item(self):                                    # Executa a função herdada e adiciona as modificações dos botões 
-        super().edit_item()
-
-        self.button_mode(self.button_1, 'cancel')
-        self.button_mode(self.button_2, 'off')
-        self.button_mode(self.button_3, 'save')
 
 class Material(Base_Frame):
     def __init__(self, parent):
@@ -280,42 +272,6 @@ class Material(Base_Frame):
 
         self.load_list_view()
 
-        self.button_mode(self.button_1, 'off')
-        self.button_mode(self.button_2, 'off')
-        self.button_mode(self.button_3, 'add')
-
-    # Altera a configuração do botão de acordo com o parametro passado:
-    def button_mode(self, button: Button, mode: Literal['edit', 'cancel', 'add', 'clear', 'save', 'off']='off'):
-        match mode:
-            case 'edit'     : button.config(text='Editar',bootstyle='primary',state='active',command=self.edit_item)
-            case 'cancel'   : button.config(text='Cancelar',bootstyle='danger',state='active',command=self.clear_entrys)
-            case 'add'      : button.config(text='Adicionar',bootstyle='success',state='active',command=self.add_item)
-            case 'clear'    : button.config(text='limpar',bootstyle='info',state='active',command=self.clear_entrys)
-            case 'save'     : button.config(text='Salvar',bootstyle='success',state='active',command=self.save_edit)
-            case 'off'      : button.config(text='', state='disable')
-
-    # Actions:
-    def select_item_in_list_view(self, event):              # Executa a função herdada e adiciona as modificações dos botões 
-        super().select_item_in_list_view(event)
-        
-        self.button_mode(self.button_1, 'off')
-        self.button_mode(self.button_2, 'edit')
-        self.button_mode(self.button_3, 'clear')
-
-    def clear_entrys(self):                                 # Executa a função herdada e adiciona as modificações dos botões 
-        super().clear_entrys()
-
-        self.button_mode(self.button_1, 'off')
-        self.button_mode(self.button_2, 'off')
-        self.button_mode(self.button_3, 'add')
-
-    def edit_item(self):                                    # Executa a função herdada e adiciona as modificações dos botões 
-        super().edit_item()
-
-        self.button_mode(self.button_1, 'cancel')
-        self.button_mode(self.button_2, 'off')
-        self.button_mode(self.button_3, 'save')
-
 class Empresa(Base_Frame):
     def __init__(self, parent):
         super().__init__(parent, 'empresa')
@@ -336,40 +292,4 @@ class Empresa(Base_Frame):
         self.list_view_tree.column('nome', width=135)
 
         self.load_list_view()
-
-        self.button_mode(self.button_1, 'off')
-        self.button_mode(self.button_2, 'off')
-        self.button_mode(self.button_3, 'add')
-
-    # Altera a configuração do botão de acordo com o parametro passado:
-    def button_mode(self, button: Button, mode: Literal['edit', 'cancel', 'add', 'clear', 'save', 'off']='off'):
-        match mode:
-            case 'edit'     : button.config(text='Editar',bootstyle='primary',state='active',command=self.edit_item)
-            case 'cancel'   : button.config(text='Cancelar',bootstyle='danger',state='active',command=self.clear_entrys)
-            case 'add'      : button.config(text='Adicionar',bootstyle='success',state='active',command=self.add_item)
-            case 'clear'    : button.config(text='limpar',bootstyle='info',state='active',command=self.clear_entrys)
-            case 'save'     : button.config(text='Salvar',bootstyle='success',state='active',command=self.save_edit)
-            case 'off'      : button.config(text='', state='disable')
-
-    # Actions:
-    def select_item_in_list_view(self, event):              # Executa a função herdada e adiciona as modificações dos botões 
-        super().select_item_in_list_view(event)
-        
-        self.button_mode(self.button_1, 'off')
-        self.button_mode(self.button_2, 'edit')
-        self.button_mode(self.button_3, 'clear')
-
-    def clear_entrys(self):                                 # Executa a função herdada e adiciona as modificações dos botões 
-        super().clear_entrys()
-
-        self.button_mode(self.button_1, 'off')
-        self.button_mode(self.button_2, 'off')
-        self.button_mode(self.button_3, 'add')
-
-    def edit_item(self):                                    # Executa a função herdada e adiciona as modificações dos botões 
-        super().edit_item()
-
-        self.button_mode(self.button_1, 'cancel')
-        self.button_mode(self.button_2, 'off')
-        self.button_mode(self.button_3, 'save')
 
