@@ -94,6 +94,7 @@ class Base_Frame(Frame):
         self.list_view_tree.pack(side='left', fill='both', expand=True, padx=1, pady=1)
         scrollbar.config(command=self.list_view_tree.yview)
         self.list_view_tree.bind('<Double-1>', self.select_item_in_list_view)
+        self.list_view_tree.bind('<Delete>', lambda x: self.dell_item())
 
     # Get Funcs:
     def get_entrys(self) -> list[Entry]:            # Retorna uma lista com todas as Entrys do self.entry_frame
@@ -240,6 +241,10 @@ class Fornecedor(Base_Frame):
         entry_nfe.grid(row=2, column=1, padx=5, pady=5)
 
         self.stringvar_list = [var_name, var_address, var_nfe]
+        entry_name.bind('<Return>', lambda x: entry_address.focus_set())
+        entry_address.bind('<Return>', lambda x: entry_nfe.focus_set())
+        entry_nfe.bind('<Return>', lambda x: self.button_3.focus_set())
+        self.button_3.bind('<Return>', lambda x: entry_name.focus_set() if var_name.get() == '' else self.button_3.invoke())
 
         self.list_view_tree.configure(columns=('id', 'nome'))
         self.list_view_tree.heading('id', text='ID')
@@ -261,6 +266,8 @@ class Material(Base_Frame):
         entry_name.grid(row=0, column=1, padx=5, pady=5)
 
         self.stringvar_list = [var_name]
+        entry_name.bind('<Return>', lambda x: self.button_3.focus_set())
+        self.button_3.bind('<Return>', lambda x: entry_name.focus_set() if var_name.get() == '' else self.button_3.invoke())
 
         self.list_view_tree.configure(columns=('id', 'nome'))
         self.list_view_tree.heading('id', text='ID')
@@ -282,6 +289,8 @@ class Empresa(Base_Frame):
         entry_name.grid(row=0, column=1, padx=5, pady=5)
 
         self.stringvar_list = [var_name]
+        entry_name.bind('<Return>', lambda x: self.button_3.focus_set())
+        self.button_3.bind('<Return>', lambda x: entry_name.focus_set() if var_name.get() == '' else self.button_3.invoke())
 
         self.list_view_tree.configure(columns=('id', 'nome'))
         self.list_view_tree.heading('id', text='ID')
