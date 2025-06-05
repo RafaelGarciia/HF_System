@@ -52,50 +52,48 @@ class Base_Frame(Frame):
 
         # Titulo do frame
         self.frame_title = Label(self, text='', font=('Arial', 15), anchor='center', justify='center')
-        self.frame_title.grid(row=0, column=0, columnspan=2)
+        self.frame_title.place(x=0, y=0, relwidth=1)
         
         # Frame que agrupa todas as entradas
         self.entry_frame = Frame(self)
-        self.entry_frame.grid(row=1, column=0)
+        self.entry_frame.place(x=0, y=30, relwidth=0.68)
+
+        # Label de mensagens temporárias
+        self.warning_label = ttk.Label(self, text='', foreground='red', anchor='center', justify='center')
+        self.warning_label.place(x=0, rely=0.83, relwidth=0.68)
+        
+        # Botões de ação
+        self.buttons_frame = Frame(self)
+        self.buttons_frame.place(x=0, rely=0.9, relwidth=1)
+
+        self.button_1 = self.New_Button()
+        self.button_1.grid(row=0, column=0, padx=15)
+
+        self.button_2 = self.New_Button()
+        self.button_2.grid(row=0, column=1, padx=15)
+
+        self.button_3 = self.New_Button()
+        self.button_3.grid(row=0, column=2, padx=15)
+
+        self.button_mode(self.button_1, 'off')
+        self.button_mode(self.button_2, 'off')
+        self.button_mode(self.button_3, 'add')
 
         # Frame da tabela
         self.list_view_frame = ttk.Frame(self)
-        self.list_view_frame.grid(
-            row=1, column=1, rowspan=2
-        )
+        self.list_view_frame.place(relx=0.68, y=30)
 
         # Scroll bar vertical
         scrollbar = ttk.Scrollbar(self.list_view_frame, orient='vertical')
-        scrollbar.pack(side='right', fill='y')
+        scrollbar.pack(side='right', fill='y', padx=1, pady=1)
 
         # Tabela para a visualização
         self.list_view_tree = ttk.Treeview(self.list_view_frame, columns=('id',), show='headings', height=22, yscrollcommand=scrollbar.set)
         self.list_view_tree.heading('id', text='ID')
         self.list_view_tree.column('id', width=0, stretch=False)  # Oculta ID
-        self.list_view_tree.pack(side='left', fill='both', expand=True)
+        self.list_view_tree.pack(side='left', fill='both', expand=True, padx=1, pady=1)
         scrollbar.config(command=self.list_view_tree.yview)
         self.list_view_tree.bind('<Double-1>', self.select_item_in_list_view)
-        
-        # Botões de ação
-        self.buttons_frame = Frame(self)
-        self.buttons_frame.grid(row=2, column=0)
-
-        self.button_1 = self.New_Button()
-        self.button_1.grid(row=0, column=0, padx=10)
-
-        self.button_2 = self.New_Button()
-        self.button_2.grid(row=0, column=1, padx=10)
-
-        self.button_3 = self.New_Button()
-        self.button_3.grid(row=0, column=2, padx=10)
-
-        # Label de mensagens temporárias
-        self.warning_label = ttk.Label(self, text='', foreground='red')
-        self.warning_label.grid(row=3, column=0, columnspan=2)
-
-        self.button_mode(self.button_1, 'off')
-        self.button_mode(self.button_2, 'off')
-        self.button_mode(self.button_3, 'add')
 
     # Get Funcs:
     def get_entrys(self) -> list[Entry]:            # Retorna uma lista com todas as Entrys do self.entry_frame
