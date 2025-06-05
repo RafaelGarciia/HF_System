@@ -20,7 +20,7 @@ def execute_script(path_script):
     conn.close()
 
 
-def insert(table: str, dados: list[tuple]):
+def insert(table: str, dados: list[str]):
     """
     Insere dados em uma tabela.
 
