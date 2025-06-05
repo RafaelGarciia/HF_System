@@ -86,9 +86,8 @@ class Window(tk.Tk):
         """
 
         self.container.pack_forget()
+        self.container:Frame = frame(self)
         self.container.pack(expand=True, fill='both')
-        page: Frame = frame(self.container)
-        page.pack(expand=True, fill='both')
 
     def criar_menu(self, menu_dict: dict) -> tk.Menu:
         """
