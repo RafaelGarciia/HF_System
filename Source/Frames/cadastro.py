@@ -224,19 +224,19 @@ class Fornecedor(Base_Frame):
 
         self.frame_title.configure(text='Fornecedor')
 
-        Label(self.entry_frame, text='Nome:').grid(row=0, column=0, padx=10, pady=5, sticky='e')
+        ttkb.Label(self.entry_frame, text='Nome:').grid(row=0, column=0, padx=10, pady=5, sticky='e')
         var_name = tk.StringVar(self.entry_frame)
-        entry_name = Entry(self.entry_frame, name='nome', textvariable=var_name, width=40)
+        entry_name = ttkb.Entry(self.entry_frame, name='nome', textvariable=var_name, width=40)
         entry_name.grid(row=0, column=1, padx=5, pady=5)
 
-        Label(self.entry_frame, text='Endereço:').grid(row=1, column=0, padx=10, pady=5, sticky='e')
+        ttkb.Label(self.entry_frame, text='Endereço:').grid(row=1, column=0, padx=10, pady=5, sticky='e')
         var_address = tk.StringVar(self.entry_frame)
-        entry_address = Entry(self.entry_frame, name='endereço',textvariable=var_address, width=40)
+        entry_address = ttkb.Entry(self.entry_frame, name='endereço',textvariable=var_address, width=40)
         entry_address.grid(row=1, column=1, padx=5, pady=5)
         
-        Label(self.entry_frame, text='NFE:').grid(row=2, column=0, padx=10, pady=5, sticky='e')
+        ttkb.Label(self.entry_frame, text='NFE:').grid(row=2, column=0, padx=10, pady=5, sticky='e')
         var_nfe = tk.StringVar(self.entry_frame)
-        entry_nfe = Entry(self.entry_frame, name='nfe',textvariable=var_nfe, width=40)
+        entry_nfe = ttkb.Entry(self.entry_frame, name='nfe',textvariable=var_nfe, width=40)
         entry_nfe.grid(row=2, column=1, padx=5, pady=5)
 
         self.stringvar_list = [var_name, var_address, var_nfe]
@@ -259,9 +259,9 @@ class Material(Base_Frame):
 
         self.frame_title.configure(text='Materia Prima')
 
-        Label(self.entry_frame, text='Nome:').grid(row=0, column=0, padx=10, pady=5, sticky='e')
+        ttkb.Label(self.entry_frame, text='Nome:').grid(row=0, column=0, padx=10, pady=5, sticky='e')
         var_name = tk.StringVar(self.entry_frame)
-        entry_name = Entry(self.entry_frame, name='nome', textvariable=var_name, width=40)
+        entry_name = ttkb.Entry(self.entry_frame, name='nome', textvariable=var_name, width=40)
         entry_name.grid(row=0, column=1, padx=5, pady=5)
 
         self.stringvar_list = [var_name]
@@ -282,9 +282,9 @@ class Empresa(Base_Frame):
 
         self.frame_title.configure(text='Empresa')
 
-        Label(self.entry_frame, text='Nome:').grid(row=0, column=0, padx=10, pady=5, sticky='e')
+        ttkb.Label(self.entry_frame, text='Nome:').grid(row=0, column=0, padx=10, pady=5, sticky='e')
         var_name = tk.StringVar(self.entry_frame)
-        entry_name = Entry(self.entry_frame, name='nome', textvariable=var_name, width=40)
+        entry_name = ttkb.Entry(self.entry_frame, name='nome', textvariable=var_name, width=40)
         entry_name.grid(row=0, column=1, padx=5, pady=5)
 
         self.stringvar_list = [var_name]
