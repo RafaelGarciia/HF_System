@@ -206,7 +206,7 @@ class Fornecedor(Base_Frame):
 
         self.list_view_tree.configure(columns=('id', 'nome'))
         self.list_view_tree.heading('id', text='ID')
-        self.list_view_tree.heading('nome', text='Nome')
+        self.list_view_tree.heading('nome', text='Selecione')
         self.list_view_tree.column('id', width=0, stretch=False)  # Oculta ID
         self.list_view_tree.column('nome', width=135)
 
