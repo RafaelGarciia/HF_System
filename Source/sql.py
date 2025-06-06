@@ -9,6 +9,7 @@ def connect() -> tuple[sqlite.Connection, sqlite.Cursor]:
 
     return conn, cursor
 
+
 def execute(sql_script, values=''):
     conn, cursor = connect()
     cursor.execute(sql_script, values)
@@ -16,6 +17,7 @@ def execute(sql_script, values=''):
     cursor.close()
     conn.close()
     del conn, cursor
+
 
 def select(sql_script):
     conn, cursor = connect()
@@ -26,6 +28,7 @@ def select(sql_script):
     conn.close()
     del conn, cursor
     return values
+
 
 def execute_script(path_script):
     with open(path_script, 'r', encoding='utf-8') as file:
@@ -60,13 +63,19 @@ def insert(table: str, dados: list[str]):
 
     execute(sql, dados)
 
+
 def get_columns(table: str):
 
-    columns_info = select(f'PRAGMA table_info({table})')    # Obtem as colunas da tabela
+    columns_info = select(
+        f'PRAGMA table_info({table})'
+    )    # Obtem as colunas da tabela
 
     # Mantém colunas que NÃO são AUTOINCREMENT e que exigem valor
-    columns = [col[1] for col in columns_info if not col[5] or col[4] is not None]
+    columns = [
+        col[1] for col in columns_info if not col[5] or col[4] is not None
+    ]
     return columns
+
 
 def get_all(table: str):
 
@@ -74,10 +83,14 @@ def get_all(table: str):
     results = select(f'SELECT * FROM {table} ORDER BY {columns[0]} ASC')
     return results
 
+
 def delete(table: str, id_: int):
     execute(f'DELETE FROM {table} WHERE id = ?', (id_,))
 
+
 def update(table: str, id, new_values: list):
     _columns = ', '.join([f'{col} = ?' for col in get_columns(table)])
-    try: execute(f'UPDATE {table} SET {_columns} WHERE id = {id}', new_values)
-    except Exception as e: ...
+    try:
+        execute(f'UPDATE {table} SET {_columns} WHERE id = {id}', new_values)
+    except Exception as e:
+        ...
