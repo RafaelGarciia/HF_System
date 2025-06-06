@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import ttk
 
 import sql
-#from ttkbootstrap.widgets import Button, Entry, Frame, Label
 import ttkbootstrap as ttkb
 
 from typing import Literal
