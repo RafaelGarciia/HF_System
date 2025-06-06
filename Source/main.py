@@ -2,7 +2,25 @@ import sql
 from Frames import cadastro
 from window import Window
 
-sql.execute_script('sql_queries\\mk_database.sql')
+sql.execute('''
+    CREATE TABLE IF NOT EXISTS material (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome TEXT NOT NULL
+    );''')
+
+sql.execute('''
+    CREATE TABLE IF NOT EXISTS empresa (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT NOT NULL
+    );''')
+
+sql.execute('''
+    CREATE TABLE IF NOT EXISTS fornecedor (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT NOT NULL,
+    endereco TEXT,
+    nfe TEXT
+    );''')
 
 
 app = Window('Janela', 500, 400)
