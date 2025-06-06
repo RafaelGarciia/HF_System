@@ -9,6 +9,23 @@ def connect() -> tuple[sqlite.Connection, sqlite.Cursor]:
 
     return conn, cursor
 
+def execute(sql_script, values=''):
+    conn, cursor = connect()
+    cursor.execute(sql_script, values)
+    conn.commit()
+    cursor.close()
+    conn.close()
+    del conn, cursor
+
+def select(sql_script):
+    conn, cursor = connect()
+    cursor.execute(sql_script)
+    values = cursor.fetchall()
+    conn.commit()
+    cursor.close()
+    conn.close()
+    del conn, cursor
+    return values
 
 def execute_script(path_script):
     with open(path_script, 'r', encoding='utf-8') as file:
@@ -17,7 +34,9 @@ def execute_script(path_script):
     conn, cursor = connect()
     cursor.executescript(script_sql)
     conn.commit()
+    cursor.close()
     conn.close()
+    del conn, cursor
 
 
 def insert(table: str, dados: list[str]):
@@ -27,7 +46,6 @@ def insert(table: str, dados: list[str]):
     :param table: str - Nome da tabela no banco
     :param dados: list of tuples - Lista de tuplas com os valores a serem inseridos
     """
-    conn, cursor = connect()
 
     # Obtem as colunas da tabela
     colunas = get_columns(table)
@@ -40,47 +58,26 @@ def insert(table: str, dados: list[str]):
     placeholders = ', '.join(['?'] * len(colunas))
     sql = f'INSERT INTO {table} ({colunas_str}) VALUES ({placeholders})'
 
-    cursor.execute(sql, dados)
-    conn.commit()
-    conn.close()
+    execute(sql, dados)
 
 def get_columns(table: str):
-    conn, cursor = connect()
-    cursor.execute(
-        f'PRAGMA table_info({table})'
-    )   # Obtem as colunas da tabela
-    columns_info = cursor.fetchall()
+
+    columns_info = select(f'PRAGMA table_info({table})')    # Obtem as colunas da tabela
 
     # Mantém colunas que NÃO são AUTOINCREMENT e que exigem valor
-    columns = [
-        col[1] for col in columns_info if not col[5] or col[4] is not None
-    ]
+    columns = [col[1] for col in columns_info if not col[5] or col[4] is not None]
     return columns
 
 def get_all(table: str):
-    conn, cursor = connect()
+
     columns = get_columns(table)
-    cursor.execute(f'SELECT * FROM {table} ORDER BY {columns[0]} ASC')
-    results = cursor.fetchall()
-    conn.close()
+    results = select(f'SELECT * FROM {table} ORDER BY {columns[0]} ASC')
     return results
 
 def delete(table: str, id_: int):
-    conn, cursor = connect()
-    cursor.execute(f'DELETE FROM {table} WHERE id = ?', (id_,))
-    conn.commit()
-    conn.close()
+    execute(f'DELETE FROM {table} WHERE id = ?', (id_,))
 
 def update(table: str, id, new_values: list):
-
     _columns = ', '.join([f'{col} = ?' for col in get_columns(table)])
-
-    try:
-        conn, cursor = connect()
-        cursor.execute(
-            f'UPDATE {table} SET {_columns} WHERE id = {id}', new_values
-        )
-        conn.commit()
-        conn.close()
-    except Exception as e:
-        ...
+    try: execute(f'UPDATE {table} SET {_columns} WHERE id = {id}', new_values)
+    except Exception as e: ...
