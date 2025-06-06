@@ -224,6 +224,7 @@ class Base_Frame(ttkb.Frame):
             self.show_warning('Deletado com sucesso.', 'green')
             self.clear_entrys()
         except Exception as e:
+            print(f'Erro ao deletar:\n{e}')
             self.show_warning(f'Erro ao deletar:\n{e}')
         self.load_list_view()
 
@@ -252,6 +253,7 @@ class Base_Frame(ttkb.Frame):
             self.show_warning('Atualizado com sucesso.', 'green')
             self.clear_entrys()
         except Exception as e:
+            print(f'Erro ao atualizar:\n{e}')
             self.show_warning(f'Erro ao atualizar:\n{e}')
         self.load_list_view()
 
