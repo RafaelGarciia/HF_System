@@ -239,22 +239,10 @@ class Fornecedor(Base_Frame):
 
         self.frame_title.configure(text='Fornecedor')
 
-        ttkb.Label(self.entry_frame, text='Nome:').grid(row=0, column=0, padx=10, pady=5, sticky='e')
-        var_name = tk.StringVar(self.entry_frame)
-        entry_name = ttkb.Entry(self.entry_frame, name='nome', textvariable=var_name, width=40)
-        entry_name.grid(row=0, column=1, padx=5, pady=5)
+        entry_name    = self.new_Entry('Nome:')
+        entry_address = self.new_Entry('Endereço:')
+        entry_nfe     = self.new_Entry('NFE:')
 
-        ttkb.Label(self.entry_frame, text='Endereço:').grid(row=1, column=0, padx=10, pady=5, sticky='e')
-        var_address = tk.StringVar(self.entry_frame)
-        entry_address = ttkb.Entry(self.entry_frame, name='endereço',textvariable=var_address, width=40)
-        entry_address.grid(row=1, column=1, padx=5, pady=5)
-        
-        ttkb.Label(self.entry_frame, text='NFE:').grid(row=2, column=0, padx=10, pady=5, sticky='e')
-        var_nfe = tk.StringVar(self.entry_frame)
-        entry_nfe = ttkb.Entry(self.entry_frame, name='nfe',textvariable=var_nfe, width=40)
-        entry_nfe.grid(row=2, column=1, padx=5, pady=5)
-
-        self.stringvar_list = [var_name, var_address, var_nfe]
         entry_name.bind('<Return>', lambda x: entry_address.focus_set())
         entry_address.bind('<Return>', lambda x: entry_nfe.focus_set())
         entry_nfe.bind('<Return>', lambda x: self.button_3.focus_set())
@@ -274,12 +262,8 @@ class Material(Base_Frame):
 
         self.frame_title.configure(text='Materia Prima')
 
-        ttkb.Label(self.entry_frame, text='Nome:').grid(row=0, column=0, padx=10, pady=5, sticky='e')
-        var_name = tk.StringVar(self.entry_frame)
-        entry_name = ttkb.Entry(self.entry_frame, name='nome', textvariable=var_name, width=40)
-        entry_name.grid(row=0, column=1, padx=5, pady=5)
+        entry_name    = self.new_Entry('Nome:')
 
-        self.stringvar_list = [var_name]
         entry_name.bind('<Return>', lambda x: self.button_3.focus_set())
         self.button_3.bind('<Return>', lambda x: entry_name.focus_set() if var_name.get() == '' else self.button_3.invoke())
 
@@ -297,12 +281,8 @@ class Empresa(Base_Frame):
 
         self.frame_title.configure(text='Empresa')
 
-        ttkb.Label(self.entry_frame, text='Nome:').grid(row=0, column=0, padx=10, pady=5, sticky='e')
-        var_name = tk.StringVar(self.entry_frame)
-        entry_name = ttkb.Entry(self.entry_frame, name='nome', textvariable=var_name, width=40)
-        entry_name.grid(row=0, column=1, padx=5, pady=5)
+        entry_name    = self.new_Entry('Nome:')
 
-        self.stringvar_list = [var_name]
         entry_name.bind('<Return>', lambda x: self.button_3.focus_set())
         self.button_3.bind('<Return>', lambda x: entry_name.focus_set() if var_name.get() == '' else self.button_3.invoke())
 
