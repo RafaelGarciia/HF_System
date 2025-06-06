@@ -431,12 +431,20 @@ class Motorista(Base_Frame):
 
         self.frete_frame = ttkb.Frame(self.entry_frame)
 
-        self.entry_phone = self.new_Entry('Telefone:', self.frete_frame)
-        self.entry_pix = self.new_Entry('Pix:', self.frete_frame)
-        self.entry_pix_name = self.new_Entry('Nome:', self.frete_frame)
+        entry_phone = self.new_Entry('Telefone:', self.frete_frame)
+        entry_pix = self.new_Entry('Pix:', self.frete_frame)
+        entry_pix_name = self.new_Entry('Nome:', self.frete_frame)
 
         entry_name.bind('<Return>', lambda x: entry_placa.focus_set())
-        entry_placa.bind('<Return>', lambda x: self.button_3.focus_set())
+        entry_placa.bind(
+            '<Return>',
+            lambda x: self.button_3.focus_set()
+            if not self.var_frete.get()
+            else entry_phone.focus_set(),
+        )
+        entry_phone.bind('<Return>', lambda x: entry_pix.focus_set())
+        entry_pix.bind('<Return>', lambda x: entry_pix_name.focus_set())
+        entry_pix_name.bind('<Return>', lambda x: self.button_3.focus_set())
         self.button_3.bind(
             '<Return>',
             lambda x: entry_name.focus_set()
