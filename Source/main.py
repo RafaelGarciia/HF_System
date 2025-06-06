@@ -28,6 +28,18 @@ sql.execute(
     );"""
 )
 
+sql.execute(
+    """
+    CREATE TABLE IF NOT EXISTS motorista (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT NOT NULL,
+    placa TEXT,
+    phone TEXT,
+    pix text,
+    pix_name TEXT
+    );"""
+)
+
 
 app = Window('Janela', 500, 400)
 app.config(
@@ -40,6 +52,7 @@ app.config(
                 'Material': lambda: app.show_frame(cadastro.Material),
                 'Empresa': lambda: app.show_frame(cadastro.Empresa),
                 'Fornecedor': lambda: app.show_frame(cadastro.Fornecedor),
+                'Motorista': lambda: app.show_frame(cadastro.Motorista),
             },
         }
     )

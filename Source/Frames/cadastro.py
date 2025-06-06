@@ -411,6 +411,38 @@ class Empresa(Base_Frame):
         self.load_list_view()
 
 
+class Motorista(Base_Frame):
+    def __init__(self, parent):
+        super().__init__(parent, 'motorista')
+
+        self.frame_title.configure(text='Motorista')
+
+        entry_name = self.new_Entry('Name:')
+        entry_placa = self.new_Entry('Placa:')
+
+        self.var_frete = tk.BooleanVar(self.entry_frame, value=False)
+        self.check_frete = ttk.Checkbutton(
+            self.entry_frame,
+            text='Frete',
+            variable=self.var_frete,
+            command=self.toggle_frete,
+        )
+        self.check_frete.pack(padx=10, pady=5)
+
+        self.frete_frame = ttkb.Frame(self.entry_frame)
+
+        self.entry_phone = self.new_Entry('Telefone:', self.frete_frame)
+        self.entry_pix = self.new_Entry('Pix:', self.frete_frame)
+        self.entry_pix_name = self.new_Entry('Nome:', self.frete_frame)
+
+        entry_name.bind('<Return>', lambda x: entry_placa.focus_set())
+        entry_placa.bind('<Return>', lambda x: self.button_3.focus_set())
+        self.button_3.bind(
+            '<Return>',
+            lambda x: entry_name.focus_set()
+            if self.stringvar_list[0].get() == ''
+            else self.button_3.invoke(),
+        )
 
         self.list_view_tree.configure(columns=('id', 'nome'))
         self.list_view_tree.heading('id', text='ID')
@@ -420,3 +452,6 @@ class Empresa(Base_Frame):
 
         self.load_list_view()
 
+    def toggle_frete(self):
+        show = self.var_frete.get()
+        self.frete_frame.pack() if show else self.frete_frame.pack_forget()
