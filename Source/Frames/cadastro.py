@@ -135,6 +135,21 @@ class Base_Frame(ttkb.Frame):
     def New_Button(self):                               # Preconfiguração da classe Button
         return ttkb.Button(self.buttons_frame, text='', width=10, state='disable')
 
+    def new_Entry(self, entry_name, parent=None):
+        place_frame = ttkb.Frame(parent or self.entry_frame)
+        place_frame.pack(pady=1)
+        
+        ttkb.Label(place_frame, text=entry_name, width=10).grid(row=0, column=0, sticky='e')
+        
+        var_entry = tk.StringVar(self.entry_frame)
+        self.stringvar_list.append(var_entry)
+        
+        entry = ttkb.Entry(place_frame, textvariable=var_entry, width=40)
+        entry.grid(row=0, column=1)
+        self.entry_list.append(entry)
+
+        return entry
+
     # Base Actions:
     def add_item(self):                                 # Rotina para adicionar um item ao banco de dados
         value_list = self.get_stringvar()
