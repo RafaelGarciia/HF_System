@@ -15,6 +15,9 @@ class Base_Frame(ttkb.Frame):
     stringvar_list: list[tk.StringVar]
     """  """
 
+    entry_list: list[ttkb.Entry]
+    """  """
+
     frame_title: ttkb.Label
     """ Frame Title\n\n  Titulo do frame"""
 
@@ -48,6 +51,7 @@ class Base_Frame(ttkb.Frame):
 
         self.table=table
         self.stringvar_list=[]
+        self.entry_list=[]
 
         # Titulo do frame
         self.frame_title = ttkb.Label(self, text='', font=('Arial', 15), anchor='center', justify='center')
@@ -95,10 +99,7 @@ class Base_Frame(ttkb.Frame):
         self.list_view_tree.bind('<Double-1>', self.select_item_in_list_view)
         self.list_view_tree.bind('<Delete>', lambda x: self.dell_item())
 
-    # Get Funcs:
-    def get_entrys(self) -> list[ttkb.Entry]:                # Retorna uma lista com todas as Entrys do self.entry_frame
-        return [widget for widget in self.entry_frame.winfo_children() if isinstance(widget, ttkb.Entry)]
-    
+    # Get Funcs:    
     def get_selected_item(self) -> dict:                # Retorna um dicionario com as informações do item selecionado
         item_id = self.list_view_tree.focus()           # Pega o ID na tabela do item selecionado
         return dict(self.list_view_tree.item(item_id))  # Pega os dados do item
@@ -113,7 +114,7 @@ class Base_Frame(ttkb.Frame):
 
     def clear_entrys(self):                             # Desbloqueia as Entrys e limpa os valores das StringVars associadas
         # Normaliza as Entrys
-        for widget in self.get_entrys(): widget.config(state='normal')
+        for widget in self.entry_list: widget.config(state='normal')
         # Seta as StringsVars como Vazias
         for var in self.stringvar_list: var.set('')
 
@@ -167,7 +168,7 @@ class Base_Frame(ttkb.Frame):
         self.load_list_view()
 
     def edit_item(self):                            # Rotina para iniciar uma edição de item
-        for entry in self.get_entrys():
+        for entry in self.entry_list:
             entry.config(state='normal')
         
         self.button_mode(self.button_1, 'cancel')
@@ -194,7 +195,7 @@ class Base_Frame(ttkb.Frame):
         _item = self.get_selected_item()
         item_values = _item['values']       # Lista com os valores da linha
 
-        for widget in self.get_entrys():
+        for widget in self.entry_list:
             widget.config(state='readonly')
         
         for _index, _var in enumerate(self.stringvar_list):
