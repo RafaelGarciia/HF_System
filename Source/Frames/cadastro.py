@@ -463,3 +463,12 @@ class Motorista(Base_Frame):
     def toggle_frete(self):
         show = self.var_frete.get()
         self.frete_frame.pack() if show else self.frete_frame.pack_forget()
+
+    def select_item_in_list_view(self, event):
+        super().select_item_in_list_view(event)
+        _item = self.get_selected_item()
+        item_values = _item['values']
+
+        self.var_frete.set(True) if item_values[3] != '' else self.var_frete.set(False)
+
+        self.toggle_frete()
