@@ -6,16 +6,15 @@ import ttkbootstrap as ttkb
 
 from typing import Literal
 
+from Frames import widgets
+
 
 class Base_Frame(ttkb.Frame):
 
     table: str
     """  """
 
-    stringvar_list: list[tk.StringVar]
-    """  """
-
-    entry_list: list[ttkb.Entry]
+    entry_list: list[widgets.Basic_Entry]
     """  """
 
     frame_title: ttkb.Label
@@ -129,7 +128,7 @@ class Base_Frame(ttkb.Frame):
     ) -> list[
         str
     ]:               # Retorna uma lista com os valores ja formatados das StringVars
-        return [var.get().strip().capitalize() for var in self.stringvar_list]
+        return [var.entry.get().strip().capitalize() for var in self.entry_list]
 
     # Clear Funcs:
     def clear_list_view(
@@ -143,10 +142,8 @@ class Base_Frame(ttkb.Frame):
     ):                             # Desbloqueia as Entrys e limpa os valores das StringVars associadas
         # Normaliza as Entrys
         for widget in self.entry_list:
-            widget.config(state='normal')
-        # Seta as StringsVars como Vazias
-        for var in self.stringvar_list:
-            var.set('')
+            widget.entry.config(state='normal')
+            widget.var.set('')
 
         self.button_mode(self.button_1, 'off')
         self.button_mode(self.button_2, 'off')
@@ -172,23 +169,6 @@ class Base_Frame(ttkb.Frame):
         return ttkb.Button(
             self.buttons_frame, text='', width=10, state='disable'
         )
-
-    def new_Entry(self, entry_name, parent=None):
-        place_frame = ttkb.Frame(parent or self.entry_frame)
-        place_frame.pack(pady=1)
-
-        ttkb.Label(place_frame, text=entry_name, width=10).grid(
-            row=0, column=0, sticky='e'
-        )
-
-        var_entry = tk.StringVar(self.entry_frame)
-        self.stringvar_list.append(var_entry)
-
-        entry = ttkb.Entry(place_frame, textvariable=var_entry, width=40)
-        entry.grid(row=0, column=1)
-        self.entry_list.append(entry)
-
-        return entry
 
     # Base Actions:
     def add_item(
@@ -232,7 +212,7 @@ class Base_Frame(ttkb.Frame):
         self,
     ):                            # Rotina para iniciar uma edição de item
         for entry in self.entry_list:
-            entry.config(state='normal')
+            entry.entry.config(state='normal')
 
         self.button_mode(self.button_1, 'cancel')
         self.button_mode(self.button_2, 'off')
@@ -263,12 +243,9 @@ class Base_Frame(ttkb.Frame):
         _item = self.get_selected_item()
         item_values = _item['values']       # Lista com os valores da linha
 
-        for widget in self.entry_list:
-            widget.config(state='readonly')
-
-        for _index, _var in enumerate(self.stringvar_list):
-            _var: tk.StringVar
-            _var.set(item_values[_index + 1])
+        for _index ,_widget in enumerate(self.entry_list):
+            _widget.entry.config(state='readonly')
+            _widget.var.set(item_values[_index + 1])
 
         self.button_mode(self.button_1, 'dell')
         self.button_mode(self.button_2, 'edit')
@@ -338,17 +315,25 @@ class Fornecedor(Base_Frame):
 
         self.frame_title.configure(text='Fornecedor')
 
-        entry_name = self.new_Entry('Nome:')
-        entry_address = self.new_Entry('Endereço:')
-        entry_nfe = self.new_Entry('NFE:')
+        entry_name      = widgets.Basic_Entry(self.entry_frame, 'Nome:')
+        entry_address   = widgets.Basic_Entry(self.entry_frame, 'Endereço:')
+        entry_nfe       = widgets.Basic_Entry(self.entry_frame, 'NFE:')
 
-        entry_name.bind('<Return>', lambda x: entry_address.focus_set())
-        entry_address.bind('<Return>', lambda x: entry_nfe.focus_set())
-        entry_nfe.bind('<Return>', lambda x: self.button_3.focus_set())
+        self.entry_list.append(entry_name)
+        self.entry_list.append(entry_address)
+        self.entry_list.append(entry_nfe)
+
+        #entry_name = self.new_Entry('Nome:')
+        #entry_address = self.new_Entry('Endereço:')
+        #entry_nfe = self.new_Entry('NFE:')
+
+        entry_name.entry.bind('<Return>', lambda x: entry_address.entry.focus_set())
+        entry_address.entry.bind('<Return>', lambda x: entry_nfe.entry.focus_set())
+        entry_nfe.entry.bind('<Return>', lambda x: self.button_3.focus_set())
         self.button_3.bind(
             '<Return>',
-            lambda x: entry_name.focus_set()
-            if self.stringvar_list[0].get() == ''
+            lambda x: entry_name.entry.focus_set()
+            if self.entry_list[0].var.get() == ''
             else self.button_3.invoke(),
         )
 
@@ -367,13 +352,14 @@ class Material(Base_Frame):
 
         self.frame_title.configure(text='Materia Prima')
 
-        entry_name = self.new_Entry('Nome:')
+        entry_name = widgets.Basic_Entry(self.entry_frame, 'Nome:')
+        self.entry_list.append(entry_name)
 
-        entry_name.bind('<Return>', lambda x: self.button_3.focus_set())
+        entry_name.entry.bind('<Return>', lambda x: self.button_3.focus_set())
         self.button_3.bind(
             '<Return>',
-            lambda x: entry_name.focus_set()
-            if self.stringvar_list[0].get() == ''
+            lambda x: entry_name.entry.focus_set()
+            if self.entry_list[0].var.get() == ''
             else self.button_3.invoke(),
         )
 
@@ -392,13 +378,14 @@ class Empresa(Base_Frame):
 
         self.frame_title.configure(text='Empresa')
 
-        entry_name = self.new_Entry('Nome:')
+        entry_name = widgets.Basic_Entry(self.entry_frame, 'Nome:')
+        self.entry_list.append(entry_name)
 
-        entry_name.bind('<Return>', lambda x: self.button_3.focus_set())
+        entry_name.entry.bind('<Return>', lambda x: self.button_3.focus_set())
         self.button_3.bind(
             '<Return>',
             lambda x: entry_name.focus_set()
-            if self.stringvar_list[0].get() == ''
+            if self.entry_list[0].var.get() == ''
             else self.button_3.invoke(),
         )
 
@@ -417,8 +404,8 @@ class Motorista(Base_Frame):
 
         self.frame_title.configure(text='Motorista')
 
-        entry_name = self.new_Entry('Name:')
-        entry_placa = self.new_Entry('Placa:')
+        entry_name = widgets.Basic_Entry(self.entry_frame, 'Nome:')
+        entry_placa = widgets.Basic_Entry(self.entry_frame, 'Placa:')
 
         self.var_frete = tk.BooleanVar(self.entry_frame, value=False)
         self.check_frete = ttk.Checkbutton(
@@ -431,24 +418,24 @@ class Motorista(Base_Frame):
 
         self.frete_frame = ttkb.Frame(self.entry_frame)
 
-        entry_phone = self.new_Entry('Telefone:', self.frete_frame)
-        entry_pix = self.new_Entry('Pix:', self.frete_frame)
-        entry_pix_name = self.new_Entry('Nome:', self.frete_frame)
+        entry_phone     = widgets.Basic_Entry(self.frete_frame, 'Telefone:')
+        entry_pix       = widgets.Basic_Entry(self.frete_frame, 'Pix:')
+        entry_pix_name  = widgets.Basic_Entry(self.frete_frame, 'Nome')
 
-        entry_name.bind('<Return>', lambda x: entry_placa.focus_set())
-        entry_placa.bind(
+        entry_name.entry.bind('<Return>', lambda x: entry_placa.entry.focus_set())
+        entry_placa.entry.bind(
             '<Return>',
             lambda x: self.button_3.focus_set()
             if not self.var_frete.get()
-            else entry_phone.focus_set(),
+            else entry_phone.entry.focus_set(),
         )
-        entry_phone.bind('<Return>', lambda x: entry_pix.focus_set())
-        entry_pix.bind('<Return>', lambda x: entry_pix_name.focus_set())
-        entry_pix_name.bind('<Return>', lambda x: self.button_3.focus_set())
+        entry_phone.entry.bind('<Return>', lambda x: entry_pix.entry.focus_set())
+        entry_pix.entry.bind('<Return>', lambda x: entry_pix_name.entry.focus_set())
+        entry_pix_name.entry.bind('<Return>', lambda x: self.button_3.focus_set())
         self.button_3.bind(
             '<Return>',
-            lambda x: entry_name.focus_set()
-            if self.stringvar_list[0].get() == ''
+            lambda x: entry_name.entry.focus_set()
+            if self.entry_list[0].var.get() == ''
             else self.button_3.invoke(),
         )
 
